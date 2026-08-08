@@ -73,7 +73,7 @@ npx skills add ofull37/cn-agent-skills --skill test-driven-development   # red-g
 
 ```
 /plugin marketplace add ofull37/cn-agent-skills
-/plugin install agent-skills@addy-agent-skills
+/plugin install cn-agent-skills@ofull37
 ```
 
 > **遇到 SSH 错误？** 市场会通过 SSH 克隆仓库。如果你没有在 GitHub 上配置 SSH 密钥，可以[添加 SSH 密钥](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)，或在添加市场这一步使用完整的 HTTPS URL 来强制走 HTTPS 克隆：
