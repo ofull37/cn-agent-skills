@@ -1,51 +1,51 @@
 ---
 name: documentation-and-adrs
-description: Records decisions and documentation. Use when making architectural decisions, changing public APIs, shipping features, or when you need to record context that future engineers and agents will need to understand the codebase.
+description: 记录决策与文档。当做出架构决策、更改公共 API、发布功能，或需要记录未来工程师和 agent 理解代码库所需的背景时使用。
 ---
 
-# Documentation and ADRs
+# 文档与 ADR
 
-## Overview
+## 概述
 
-Document decisions, not just code. The most valuable documentation captures the *why* — the context, constraints, and trade-offs that led to a decision. Code shows *what* was built; documentation explains *why it was built this way* and *what alternatives were considered*. This context is essential for future humans and agents working in the codebase.
+记录决策，而不只是代码。最有价值的文档捕获*为什么*——导致某个决策的背景、约束和权衡。代码显示*做了什么*；文档解释*为什么这样做*以及*考虑了哪些替代方案*。这个背景对于未来在代码库中工作的人类和 agent 都至关重要。
 
-## When to Use
+## 何时使用
 
-- Making a significant architectural decision
-- Choosing between competing approaches
-- Adding or changing a public API
-- Shipping a feature that changes user-facing behavior
-- Onboarding new team members (or agents) to the project
-- When you find yourself explaining the same thing repeatedly
+- 做出一个重要的架构决策
+- 在相互竞争的方案之间做选择
+- 添加或更改公共 API
+- 发布一个改变面向用户行为的功能
+- 让新团队成员（或 agent）上手项目
+- 当你发现自己反复解释同一件事时
 
-**When NOT to use:** Don't document obvious code. Don't add comments that restate what the code already says. Don't write docs for throwaway prototypes.
+**何时不使用：** 不要为显而易见的代码写文档。不要添加复述代码已表达内容的注释。不要为一次性原型写文档。
 
-## Architecture Decision Records (ADRs)
+## 架构决策记录（ADR）
 
-ADRs capture the reasoning behind significant technical decisions. They're the highest-value documentation you can write.
+ADR 捕获重大技术决策背后的推理。它们是你所能写出的最高价值的文档。
 
-### When to Write an ADR
+### 何时写 ADR
 
-- Choosing a framework, library, or major dependency
-- Designing a data model or database schema
-- Selecting an authentication strategy
-- Deciding on an API architecture (REST vs. GraphQL vs. tRPC)
-- Choosing between build tools, hosting platforms, or infrastructure
-- Any decision that would be expensive to reverse
+- 选择框架、库或主要依赖
+- 设计数据模型或数据库 schema
+- 选择认证策略
+- 决定 API 架构（REST vs. GraphQL vs. tRPC）
+- 在构建工具、托管平台或基础设施之间做选择
+- 任何回退成本高昂的决策
 
-### Match the existing convention first
+### 先匹配现有约定
 
-Before creating an ADR, inspect the available repository context for an established convention — existing ADRs, project instructions, and ADR-related configuration or tooling (e.g. an `.adr-dir` file). An established convention overrides the defaults below. Match:
+在创建 ADR 之前，检查可用的仓库上下文，寻找已确立的约定——现有的 ADR、项目指令，以及与 ADR 相关的配置或工具（例如 `.adr-dir` 文件）。已确立的约定优先于下面的默认设置。匹配：
 
-- **Location and format** — e.g. `docs/adr/*.md`, `Documentation/Decisions/*.rst`, a MADR layout, or an `adr-tools` setup. Match the existing directory, file extension, and markup (Markdown vs reStructuredText).
-- **Numbering and naming** — continue the existing sequence and filename pattern (`ADR-004-Title.rst`, `0004-title.md`, …); don't restart at 001 or introduce a second scheme.
-- **Section headings** — reuse the project's heading set rather than imposing this template's.
+- **位置和格式**——例如 `docs/adr/*.md`、`Documentation/Decisions/*.rst`、MADR 布局或 `adr-tools` 配置。匹配现有的目录、文件扩展名和标记语言（Markdown vs reStructuredText）。
+- **编号与命名**——延续现有的序列和文件名模式（`ADR-004-Title.rst`、`0004-title.md`、…）；不要从 001 重新开始，也不要引入第二套方案。
+- **章节标题**——复用项目的标题集，而不是强加本模板的。
 
-If the available evidence conflicts, surface the conflict rather than silently introducing another scheme. Only when no convention can be established do you apply the default below.
+如果可用证据互相冲突，提出这个冲突，而不是默默引入另一套方案。只有在无法确立任何约定时，才应用下面的默认设置。
 
-### ADR Template
+### ADR 模板
 
-Store ADRs in `docs/decisions/` with sequential numbering (unless the project already uses another location — see above):
+把 ADR 存放在 `docs/decisions/` 中，使用顺序编号（除非项目已经在用另一个位置——见上）：
 
 ```markdown
 # ADR-001: Use PostgreSQL for primary database
@@ -90,20 +90,20 @@ Use PostgreSQL with Prisma ORM.
 - Hosting on managed service (Supabase, Neon, or RDS)
 ```
 
-### ADR Lifecycle
+### ADR 生命周期
 
 ```
 PROPOSED → ACCEPTED → (SUPERSEDED or DEPRECATED)
 ```
 
-- **Don't delete old ADRs.** They capture historical context.
-- When a decision changes, write a new ADR that references and supersedes the old one.
+- **不要删除旧的 ADR。** 它们捕获历史背景。
+- 当决策改变时，写一个新的 ADR，引用并取代旧的。
 
-## Inline Documentation
+## 行内文档
 
-### When to Comment
+### 何时加注释
 
-Comment the *why*, not the *what*:
+注释*为什么*，而不是*什么*：
 
 ```typescript
 // BAD: Restates the code
@@ -119,7 +119,7 @@ if (now - windowStart > WINDOW_SIZE_MS) {
 }
 ```
 
-### When NOT to Comment
+### 何时不加注释
 
 ```typescript
 // Don't comment self-explanatory code
@@ -134,7 +134,7 @@ function calculateTotal(items: CartItem[]): number {
 // const oldImplementation = () => { ... }  ← Delete it, git has history
 ```
 
-### Document Known Gotchas
+### 记录已知坑
 
 ```typescript
 /**
@@ -149,11 +149,11 @@ export function initializeTheme(theme: Theme): void {
 }
 ```
 
-## API Documentation
+## API 文档
 
-For public APIs (REST, GraphQL, library interfaces):
+对于公共 API（REST、GraphQL、库接口）：
 
-### Inline with Types (Preferred for TypeScript)
+### 与类型内联（TypeScript 首选）
 
 ```typescript
 /**
@@ -173,7 +173,7 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
 }
 ```
 
-### OpenAPI / Swagger for REST APIs
+### REST API 的 OpenAPI / Swagger
 
 ```yaml
 paths:
@@ -197,9 +197,9 @@ paths:
           description: Validation error
 ```
 
-## README Structure
+## README 结构
 
-Every project should have a README that covers:
+每个项目都应该有一个 README，覆盖：
 
 ```markdown
 # Project Name
@@ -228,9 +228,9 @@ Link to ADRs for details.
 How to contribute, coding standards, PR process.
 ```
 
-## Changelog Maintenance
+## Changelog 维护
 
-For shipped features:
+对于已发布的功能：
 
 ```markdown
 # Changelog
@@ -247,42 +247,42 @@ For shipped features:
 - Task list now loads 50 items per page (was 20) for better UX (#126)
 ```
 
-## Documentation for Agents
+## 面向 Agent 的文档
 
-Special consideration for AI agent context:
+对 AI agent 上下文的特别考量：
 
-- **CLAUDE.md / rules files** — Document project conventions so agents follow them
-- **Spec files** — Keep specs updated so agents build the right thing
-- **ADRs** — Help agents understand why past decisions were made (prevents re-deciding)
-- **Inline gotchas** — Prevent agents from falling into known traps
+- **CLAUDE.md / rules 文件** —— 记录项目约定，让 agent 遵循它们
+- **Spec 文件** —— 保持 spec 更新，让 agent 构建正确的东西
+- **ADR** —— 帮助 agent 理解过去的决策为何如此（防止重新决策）
+- **行内坑** —— 防止 agent 掉进已知陷阱
 
-## Common Rationalizations
+## 常见合理化借口
 
-| Rationalization | Reality |
+| 合理化借口 | 现实 |
 |---|---|
-| "The code is self-documenting" | Code shows what. It doesn't show why, what alternatives were rejected, or what constraints apply. |
-| "We'll write docs when the API stabilizes" | APIs stabilize faster when you document them. The doc is the first test of the design. |
-| "Nobody reads docs" | Agents do. Future engineers do. Your 3-months-later self does. |
-| "ADRs are overhead" | A 10-minute ADR prevents a 2-hour debate about the same decision six months later. |
-| "Comments get outdated" | Comments on *why* are stable. Comments on *what* get outdated — that's why you only write the former. |
+| 「代码是自文档化的」 | 代码显示什么。它不显示为什么、哪些替代方案被否决，或存在哪些约束。 |
+| 「API 稳定下来我们再写文档」 | 当你写文档时，API 稳定得更快。文档是设计的第一道测试。 |
+| 「没人读文档」 | Agent 会读。未来的工程师会读。三个月后的你自己也会读。 |
+| 「ADR 是额外开销」 | 一份 10 分钟的 ADR 能防止六个月后对同一决策进行 2 小时的辩论。 |
+| 「注释会过时」 | 关于*为什么*的注释是稳定的。关于*什么*的注释会过时——这就是为什么你只写前者。 |
 
-## Red Flags
+## 危险信号
 
-- Architectural decisions with no written rationale
-- Public APIs with no documentation or types
-- README that doesn't explain how to run the project
-- Commented-out code instead of deletion
-- TODO comments that have been there for weeks
-- No ADRs in a project with significant architectural choices
-- Documentation that restates the code instead of explaining intent
+- 没有书面理由的架构决策
+- 没有文档或类型的公共 API
+- 不解释如何运行项目的 README
+- 被注释掉的代码而不是删除
+- 已经存在数周的 TODO 注释
+- 一个拥有重大架构选择的项目却没有 ADR
+- 复述代码而不是解释意图的文档
 
-## Verification
+## 验证
 
-After documenting:
+在完成文档之后：
 
-- [ ] ADRs exist for all significant architectural decisions
-- [ ] README covers quick start, commands, and architecture overview
-- [ ] API functions have parameter and return type documentation
-- [ ] Known gotchas are documented inline where they matter
-- [ ] No commented-out code remains
-- [ ] Rules files (CLAUDE.md etc.) are current and accurate
+- [ ] 所有重大架构决策都有 ADR
+- [ ] README 覆盖快速开始、命令和架构概览
+- [ ] API 函数有参数和返回类型文档
+- [ ] 已知坑在它们重要的地方做了行内记录
+- [ ] 没有遗留被注释掉的代码
+- [ ] rules 文件（CLAUDE.md 等）是当前且准确的

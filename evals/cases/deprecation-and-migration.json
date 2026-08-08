@@ -3,24 +3,24 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "We are sunsetting the v1 API, plan the deprecation",
+        "prompt": "我们正在停用 v1 API，请规划弃用事宜",
         "top_k": 3
       },
       {
-        "prompt": "Migrate users off the legacy auth system without breaking them",
+        "prompt": "在不破坏用户体验的前提下，把用户从旧认证系统迁移出来",
         "top_k": 3
       },
       {
-        "prompt": "How do I remove this old feature safely for existing users?",
+        "prompt": "如何安全地为现有用户移除这个旧功能？",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Add dark mode to the settings page"
+        "prompt": "在设置页面添加深色模式"
       },
       {
-        "prompt": "Why is this test flaky on CI?",
+        "prompt": "为什么这个测试在 CI 上不稳定？",
         "owner": "ci-cd-and-automation"
       }
     ]
@@ -28,15 +28,15 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Plan the deprecation of a public v1 REST API with 200 external consumers, replaced by v2.",
-      "expected_output": "A staged deprecation plan: comms, timeline, compatibility window, monitoring, and removal criteria",
+      "prompt": "规划一个拥有 200 个外部调用方的公共 v1 REST API 的弃用，由 v2 取代。",
+      "expected_output": "一份分阶段的弃用计划：沟通、时间线、兼容窗口、监控和移除标准",
       "files": [
         "deprecation-and-migration"
       ],
       "expectations": [
-        "Consumers are notified with a timeline before any breaking change",
-        "A compatibility or migration window exists with monitoring of remaining usage",
-        "Removal is gated on measured migration, not a calendar date alone"
+        "在任何破坏性变更之前，应先按时间线通知调用方",
+        "需要有兼容或迁移窗口，并监控剩余使用情况",
+        "移除应以实测迁移情况为门槛，而不仅仅是日历日期"
       ]
     }
   ]

@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Write an ADR for choosing Postgres over MongoDB",
+        "prompt": "为选择 Postgres 而非 MongoDB 编写一份 ADR",
         "top_k": 3
       },
       {
-        "prompt": "Document the architecture decision behind the queue design",
+        "prompt": "记录队列设计背后的架构决策",
         "top_k": 3
       },
       {
-        "prompt": "Update the documentation for the new setup flow and record why it changed",
+        "prompt": "更新新设置流程的文档，并记录变更原因",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Find the root cause of the memory leak in the worker",
+        "prompt": "找出 worker 中内存泄漏的根本原因",
         "owner": "debugging-and-error-recovery"
       },
       {
-        "prompt": "Harden the login endpoint against brute force attacks",
+        "prompt": "加固登录端点以防暴力破解攻击",
         "owner": "security-and-hardening"
       }
     ]
@@ -29,15 +29,15 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Record the decision to adopt event sourcing for the orders service as an ADR.",
-      "expected_output": "An ADR capturing context, decision, alternatives considered, and consequences",
+      "prompt": "把为订单服务采用事件溯源的决策记录为一份 ADR。",
+      "expected_output": "一份 ADR，记录背景、决策、考虑过的备选方案和后果",
       "files": [
         "documentation-and-adrs"
       ],
       "expectations": [
-        "The ADR states context, decision, alternatives, and consequences distinctly",
-        "Trade-offs and rejected options are recorded, not just the winning choice",
-        "The document is written in timeless language describing current state"
+        "ADR 应明确区分背景、决策、备选方案和后果",
+        "要记录权衡和否决的选项，而不只是胜出的选择",
+        "文档应以描述当前状态的、不受时间影响的语言撰写"
       ]
     }
   ]

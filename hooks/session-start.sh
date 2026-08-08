@@ -1,6 +1,6 @@
 #!/bin/bash
-# agent-skills session start hook
-# Injects the using-agent-skills meta-skill into every new session
+# agent-skills 会话启动 hook
+# 将 using-agent-skills 元技能注入每个新会话
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILLS_DIR="$(dirname "$SCRIPT_DIR")/skills"
@@ -13,7 +13,7 @@ fi
 
 if [ -f "$META_SKILL" ]; then
   CONTENT=$(cat "$META_SKILL")
-  # Use jq to properly escape and construct valid JSON
+  # 使用 jq 正确转义并构造合法的 JSON
   jq -cn \
     --arg message "agent-skills loaded. Use the skill discovery flowchart to find the right skill for your task.
 

@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "The app crashes with a TypeError when I click save, help me find the root cause",
+        "prompt": "我点击保存时应用抛出 TypeError 崩溃，帮我找到根本原因",
         "top_k": 3
       },
       {
-        "prompt": "The API is throwing intermittent 500 errors in production, help me find the root cause",
+        "prompt": "API 在生产环境间歇性抛出 500 错误，帮我找到根本原因",
         "top_k": 3
       },
       {
-        "prompt": "This test passed yesterday and fails today, figure out what broke",
+        "prompt": "这个测试昨天通过今天失败，找出是什么坏了",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Write the API documentation for the orders service",
+        "prompt": "为订单服务编写 API 文档",
         "owner": "documentation-and-adrs"
       },
       {
-        "prompt": "Simplify this working function for readability",
+        "prompt": "为了可读性简化这个能运行的函数",
         "owner": "code-simplification"
       }
     ]
@@ -29,29 +29,29 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "A test that passed yesterday now fails with an off-by-one error in pagination. Find and fix the root cause.",
-      "expected_output": "A reproduced failure, an identified root cause, a minimal fix, and a guard against regression",
+      "prompt": "一个昨天还通过的测试现在因分页中的差一错误而失败。请找到并修复根本原因。",
+      "expected_output": "一个可复现的失败、明确的根本原因、最小化的修复以及防止回归的保障",
       "files": [
         "debugging-and-error-recovery"
       ],
       "expectations": [
-        "The failure is reproduced before any fix is attempted",
-        "The root cause is identified and stated, not just the symptom patched",
-        "A regression test exists after the fix",
-        "The fix is minimal and scoped to the cause"
+        "在任何修复尝试之前先复现失败",
+        "要识别并说明根本原因，而不是只修补症状",
+        "修复后要有回归测试",
+        "修复要最小化并限定在原因范围内"
       ]
     },
     {
       "id": 2,
-      "prompt": "Production checkout is failing and a stakeholder demands an immediate pagination patch without reproduction. Respond under time pressure.",
-      "expected_output": "Evidence preserved, the failure reproduced, and a root-cause fix guarded by a regression test",
+      "prompt": "生产环境结账失败，利益相关者要求在未复现的情况下立即打上分页补丁。请在时间压力下应对。",
+      "expected_output": "保留证据、复现失败，并以回归测试守护的根本原因修复",
       "files": [
         "debugging-and-error-recovery"
       ],
       "expectations": [
-        "The time pressure does not cause reproduction or evidence gathering to be skipped",
-        "The requested speculative patch is not applied before the cause is localized",
-        "The final fix is tied to a reproduced cause and a regression test"
+        "时间压力不能导致跳过复现或证据收集",
+        "在定位原因之前，不得应用所要求的投机性补丁",
+        "最终修复必须与复现出的原因和回归测试相关联"
       ]
     }
   ]

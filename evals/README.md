@@ -1,27 +1,27 @@
 # Skill Evals
 
-How this repo measures whether its skills actually work: that they **trigger** when they should, **stay distinct** from each other, and **change agent behavior** the way each skill promises.
+这个仓库如何衡量其技能是否真的有效：它们是否在**应该触发时触发**、彼此之间是否**保持区分**，以及是否按每个技能承诺的方式**改变 agent 的行为**。
 
-## Prior art (and what we adopted)
+## 参考实践（以及我们采纳了什么）
 
-There is no single settled community standard for evaluating `SKILL.md` skills, but two approaches lead:
+目前没有统一的社区标准来评估 `SKILL.md` 技能，但有两种做法走在前列：
 
-- **Anthropic's skill-creator v2** defines a per-skill `evals.json` (prompt + `expectations[]`, graded from the transcript) plus trigger-accuracy testing of descriptions against sample prompts. We adopt its [`evals.json` schema](https://github.com/anthropics/skills/tree/main/skills/skill-creator) for our behavioral tier and add one optional `kind` field to select the artifact being graded.
-- **Superpowers** (obra) tests skills with bash + `claude -p` + prompt fixtures and grader scripts. Our behavioral runner follows the same headless-`claude` pattern, with the grading rubric drawn from `expectations[]`.
+- **Anthropic 的 skill-creator v2** 为每个技能定义了一个 `evals.json`（prompt + `expectations[]`，根据对话记录评分），并测试 description 对样本 prompt 的触发准确性。我们为行为层采用了它的 [`evals.json` 结构](https://github.com/anthropics/skills/tree/main/skills/skill-creator)，并额外增加了一个可选的 `kind` 字段来选择被评分的产物。
+- **Superpowers**（obra）用 bash + `claude -p` + prompt 素材和评分脚本来测试技能。我们的行为层运行器遵循相同的无头 `claude` 模式，评分规则取自 `expectations[]`。
 
-What neither provides is a **deterministic, CI-safe** check for a multi-skill *catalog* — does each skill's description carry the vocabulary users actually say, and do two skills' descriptions collide? That's Tier 2 below, and it's this repo's addition.
+两者都没有提供的是对一个**多技能目录**进行的**确定性、CI 安全**的检查——每个技能的 description 是否包含用户实际会说的词汇，以及两个技能的 description 是否相互冲突。这就是下面的第二层，也是本仓库的补充。
 
-## The three tiers
+## 三个层级
 
-| Tier | What it checks | Runs | Cost |
+| 层级 | 检查内容 | 运行方式 | 成本 |
 |---|---|---|---|
-| 1. Structural | Frontmatter, naming, required sections, command parity | CI (`validate-skills.js`, `validate-commands.js`) | Free |
-| 2. Trigger & routing | Positive prompts rank their skill top-k; negative prompts don't; no two descriptions near-collide | CI (`run-evals.js`) | Free |
-| 3. Behavioral | An agent following the skill satisfies its `expectations[]` | On demand (`run-evals.js --behavioral`) | Tokens |
+| 1. 结构 | frontmatter、命名、必需章节、命令一致性 | CI（`validate-skills.js`、`validate-commands.js`） | 免费 |
+| 2. 触发与路由 | 正面 prompt 将其技能排进 top-k；负面 prompt 不能排进；没有两个 description 近似冲突 | CI（`run-evals.js`） | 免费 |
+| 3. 行为 | 遵循该技能的 agent 满足其 `expectations[]` | 按需（`run-evals.js --behavioral`） | 消耗 tokens |
 
-Tier 2 is a **lexical approximation** of routing (stemmed TF-IDF over descriptions). It cannot judge semantics — that's Tier 3's job — but it catches the two failure modes that dominate real trigger bugs: a description missing the vocabulary users say (false negative), and an over-broad description that outranks the right skill (false positive). A Tier-2 failure usually means *fix the description*, not the eval.
+第二层是路由的**词汇近似**（对 description 做词干化的 TF-IDF）。它无法判断语义——那是第三层的工作——但它能抓住主导真实触发 bug 的两种失败模式：description 缺少用户所说的词汇（漏报），以及 description 过于宽泛、压过了正确技能（误报）。第二层失败通常意味着要**修改 description**，而不是修改 eval。
 
-## Running
+## 运行
 
 ```bash
 # Tier 2 — deterministic, runs in CI
@@ -33,13 +33,13 @@ node scripts/run-evals.js --behavioral test-driven-development            # spen
 node scripts/run-evals.js --behavioral test-driven-development --dry-run  # prints the plan only
 ```
 
-Tier 3 supports two behavioral artifact kinds. `execution` is the default: each eval runs in a throwaway git repository, real project inputs from `files[]` are materialized out of `evals/fixtures/` and committed as the baseline, and the grader judges the full `--output-format stream-json --verbose` execution trace, including tool calls. `dialogue` is reserved for skills whose deliverable is the conversation itself; it needs no fixture, and the grader judges the assistant's conversational turns without requiring file edits or commands. Claiming `dialogue` is a human-reviewed exemption, not a general escape hatch for execution skills.
+第三层支持两种行为产物类型。`execution` 是默认类型：每个 eval 在一个一次性 git 仓库中运行，来自 `files[]` 的真实项目输入会从 `evals/fixtures/` 中落地并作为基线提交，评分器对完整的 `--output-format stream-json --verbose` 执行轨迹（包括工具调用）进行评分。`dialogue` 保留给那些交付物本身就是对话的技能；它不需要 fixture，评分器对 assistant 的对话轮次进行评分，而不要求文件改动或命令。声称使用 `dialogue` 是需要人工评审的豁免，而不是 execution 类技能的一般逃生通道。
 
-The executor runs with an explicit permission mode (`--permission-mode acceptEdits` plus a pre-approved tool list) so execution evals can genuinely edit files, run commands, inspect diffs, and make commits rather than being denied and narrating instead. Traces are fenced as untrusted data in the grader prompt and piped to the grader over stdin (they can be megabytes; argv would hit the OS argument-size limit), executor and grader calls carry timeouts, and grader output is validated as JSON before being written to `evals/results/` (gitignored) in skill-creator's `grading.json` shape. Discipline skills also include pressure cases for time pressure, sunk cost, and authority pressure; these verify that the workflow still holds when the prompt argues for skipping it.
+执行器以显式的权限模式运行（`--permission-mode acceptEdits` 加上一份预批准的工具清单），这样 execution 类 eval 能够真正编辑文件、运行命令、检查 diff 并提交，而不是被拒绝后只能口述。轨迹在评分器 prompt 中被视为不可信数据加以围栏，并通过 stdin 传给评分器（轨迹可能达到 MB 级；argv 会触及操作系统参数大小限制），执行器和评分器调用都带有超时，评分器输出在写入 `evals/results/`（gitignore 忽略）之前会先按 JSON 校验，使用 skill-creator 的 `grading.json` 形状。纪律类技能还包含针对时间压力、沉没成本和权威压力的施压用例；这些用例验证当 prompt 主张跳过工作流时，工作流仍然成立。
 
-## Eval case format
+## Eval 用例格式
 
-One file per skill: `evals/cases/<skill-name>.json`.
+每个技能一个文件：`evals/cases/<skill-name>.json`。
 
 ```json
 {
@@ -71,15 +71,15 @@ One file per skill: `evals/cases/<skill-name>.json`.
 }
 ```
 
-- `evals[]` uses skill-creator's core schema (`id`, `prompt`, `expected_output`, optional `files[]`, `expectations[]`) plus this repository's optional `kind`. `kind` must be `execution` or `dialogue` and defaults to `execution` for compatibility. Execution evals require non-empty `files[]`; paths are relative to `evals/fixtures/` and may name a file or project directory. Dialogue evals may omit `files[]` because the transcript is the artifact. Expectations are verifiable statements a grader checks against the relevant artifact — behaviors, not phrasings.
-- `trigger` is this repo's extension. `positive` prompts are realistic user asks that should route here (`top_k` defaults to 3; tighten to 1 for a skill's signature ask). `negative` prompts belong to a *different* skill; this skill must not rank first for them. Declare that skill in `owner` where you can: the runner then asserts the owner **outranks** this skill, turning the negative into a real pairwise routing test instead of one that can pass vacuously when the prompt matches nothing.
+- `evals[]` 使用 skill-creator 的核心结构（`id`、`prompt`、`expected_output`、可选的 `files[]`、`expectations[]`），再加上本仓库的可选 `kind`。`kind` 必须是 `execution` 或 `dialogue`，出于兼容性默认为 `execution`。execution 类 eval 要求 `files[]` 非空；路径相对于 `evals/fixtures/`，可以命名一个文件或项目目录。dialogue 类 eval 可以省略 `files[]`，因为对话记录本身就是产物。Expectations 是评分器针对相关产物检查的可验证陈述——衡量行为，而不是措辞。
+- `trigger` 是本仓库的扩展。`positive` prompt 是应该路由到这里的真实用户请求（`top_k` 默认为 3；对于某技能的标志性请求可收紧为 1）。`negative` prompt 属于**另一个**技能；本技能不得为它们排第一。在可行的地方，在 `owner` 中声明那个技能：运行器随后断言 owner **压过**本技能，把负面用例变成真正的两两路由测试，而不是当 prompt 什么也匹配不到时可以空洞通过的测试。
 
-**Writing good trigger prompts:** paraphrase how users actually talk; don't copy the description (that's gaming the eval). If a realistic prompt can't rank because the description lacks its vocabulary, that is a real finding — improve the description.
+**编写好的触发 prompt：** 改写用户真实的说话方式；不要复制 description（那是在作弊测试）。如果一个真实可信的 prompt 无法排进名次，是因为 description 缺少其词汇，那这就是一个真实发现——去改进 description。
 
-## Adding a skill
+## 添加技能
 
-Every skill ships with an eval file. When you add `skills/<name>/`, add `evals/cases/<name>.json` with at least 3 positive triggers, 2 negative triggers, and 1 behavioral eval. Execution evals must be backed by `evals/fixtures/<name>/`; use `kind: "dialogue"` only when the skill's deliverable is genuinely the conversation itself. Missing case files, incomplete case counts, unknown kinds, invalid fixture paths, and absent required fixtures are CI errors.
+每个技能都附带一个 eval 文件。当你添加 `skills/<name>/` 时，要同时添加 `evals/cases/<name>.json`，其中至少包含 3 个正面触发、2 个负面触发和 1 个行为 eval。execution 类 eval 必须以 `evals/fixtures/<name>/` 为支撑；只有当技能的交付物确实是对话本身时，才使用 `kind: "dialogue"`。缺失用例文件、用例数量不足、未知的 `kind`、无效的 fixture 路径以及缺失必需的 fixture 都是 CI 错误。
 
-## Metrics to watch
+## 需要关注的指标
 
-The Tier-2 run prints a **trigger rank-1 rate** (share of positive prompts that rank their skill first, not merely top-k). CI runs with `--min-rank1 80`, leaving useful headroom below the checked-in 86% baseline so an unrelated description edit does not immediately turn CI red. Raise the floor as routing improves; never lower it to make a regression pass. Falling numbers mean descriptions are drifting toward each other. The collision check errors at ≥75% pairwise description similarity and warns at ≥50%. Known description-vocabulary gaps surfaced by these evals are tracked in [#351](https://github.com/addyosmani/agent-skills/issues/351).
+第二层运行会打印一个**触发 rank-1 比率**（正面 prompt 中把其技能排第一位的比例，而不仅仅是 top-k）。CI 以 `--min-rank1 80` 运行，在已提交的 86% 基线以下留有有用的余量，这样无关的 description 改动不会立即让 CI 变红。随着路由改进可提高该下限；绝不要为让回归通过而降低它。数字下降意味着 description 正在彼此漂移。冲突检查在成对 description 相似度 ≥75% 时报错，在 ≥50% 时告警。这些 eval 暴露出的已知 description 词汇缺口记录在 [#351](https://github.com/addyosmani/agent-skills/issues/351) 中。

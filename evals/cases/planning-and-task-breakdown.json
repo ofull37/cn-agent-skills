@@ -3,41 +3,41 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Break this spec into small verifiable tasks with acceptance criteria",
+        "prompt": "把这个 spec 拆分成带验收标准的小型可验证任务",
         "top_k": 3
       },
       {
-        "prompt": "Turn the PRD into an ordered task list we can execute",
+        "prompt": "把 PRD 变成一个我们可以执行的有序任务清单",
         "top_k": 3
       },
       {
-        "prompt": "Plan the work into implementable chunks before we start coding",
+        "prompt": "在开始编码之前把工作规划成可实现的块",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Debug the crash on startup",
+        "prompt": "调试启动时的崩溃",
         "owner": "debugging-and-error-recovery"
       },
       {
-        "prompt": "Encode the output so it is safe against XSS"
+        "prompt": "对输出进行编码以防 XSS"
       }
     ]
   },
   "evals": [
     {
       "id": 1,
-      "prompt": "Break the attached notifications spec into an executable plan.",
-      "expected_output": "Ordered tasks in tasks/plan.md, each small, verifiable, with acceptance criteria and dependencies",
+      "prompt": "把附带的通知 spec 拆分成一个可执行的计划。",
+      "expected_output": "tasks/plan.md 中的有序任务，每个任务都小、可验证，并带有验收标准和依赖",
       "files": [
         "planning-and-task-breakdown"
       ],
       "expectations": [
-        "Every task has acceptance criteria",
-        "Tasks are ordered by dependency",
-        "Tasks are vertical slices rather than horizontal layers",
-        "No implementation code is written during planning"
+        "每个任务都要有验收标准",
+        "任务应按依赖关系排序",
+        "任务应是垂直切片，而不是水平分层",
+        "规划阶段不得编写任何实现代码"
       ]
     }
   ]

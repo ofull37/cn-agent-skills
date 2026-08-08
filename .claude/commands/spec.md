@@ -1,15 +1,15 @@
 ---
-description: Start spec-driven development — write a structured specification before writing code
+description: 开始 spec 驱动开发——在编写代码之前先编写结构化规格说明
 ---
 
-Invoke the agent-skills:spec-driven-development skill.
+调用 agent-skills:spec-driven-development 技能。
 
-Begin by understanding what the user wants to build. Ask clarifying questions about:
-1. The objective and target users
-2. Core features and acceptance criteria
-3. Tech stack preferences and constraints
-4. Known boundaries (what to always do, ask first about, and never do)
+首先了解用户想要构建什么。围绕以下方面提出澄清性问题：
+1. 目标和目标用户
+2. 核心功能与验收标准
+3. 技术栈偏好与约束
+4. 已知边界（始终要做、先询问后做以及绝不做什么）
 
-Then generate a structured spec covering all six core areas: objective, commands, project structure, code style, testing strategy, and boundaries.
+然后生成一份覆盖全部六个核心领域的结构化 spec：目标、命令、项目结构、代码风格、测试策略和边界。
 
-Save the spec as SPEC.md in the project root and confirm with the user before proceeding.
+将 spec 保存为项目根目录下的 SPEC.md，并在继续之前与用户确认。

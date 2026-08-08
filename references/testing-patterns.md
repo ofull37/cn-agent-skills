@@ -1,19 +1,19 @@
-# Testing Patterns Reference (JavaScript/TypeScript)
+# 测试模式参考（JavaScript/TypeScript）
 
-Quick reference of JavaScript/TypeScript testing patterns — Jest, React Testing Library, Supertest, and Playwright — illustrating the universal principles from the `test-driven-development` skill. The principles (Arrange-Act-Assert, naming, mock discipline, anti-patterns) apply in any ecosystem; the syntax and tooling shown here are JS/TS-specific. In another stack, follow the same principles with the repository's own test framework and commands.
+JavaScript/TypeScript 测试模式的快速参考——Jest、React Testing Library、Supertest 和 Playwright——展示 `test-driven-development` 技能中的通用原则。这些原则（Arrange-Act-Assert、命名、mock 纪律、反模式）适用于任何生态系统；这里展示的语法和工具是 JS/TS 特有的。在其他技术栈中，用仓库自己的测试框架和命令遵循同样的原则。
 
-## Table of Contents
+## 目录
 
-- [Test Structure (Arrange-Act-Assert)](#test-structure-arrange-act-assert)
-- [Test Naming Conventions](#test-naming-conventions)
-- [Common Assertions](#common-assertions)
-- [Mocking Patterns](#mocking-patterns)
-- [React/Component Testing](#reactcomponent-testing)
-- [API / Integration Testing](#api--integration-testing)
-- [E2E Testing (Playwright)](#e2e-testing-playwright)
-- [Test Anti-Patterns](#test-anti-patterns)
+- [测试结构（Arrange-Act-Assert）](#test-structure-arrange-act-assert)
+- [测试命名约定](#test-naming-conventions)
+- [常见断言](#common-assertions)
+- [Mock 模式](#mocking-patterns)
+- [React/组件测试](#reactcomponent-testing)
+- [API / 集成测试](#api--integration-testing)
+- [E2E 测试（Playwright）](#e2e-testing-playwright)
+- [测试反模式](#test-anti-patterns)
 
-## Test Structure (Arrange-Act-Assert)
+## 测试结构（Arrange-Act-Assert）
 
 ```typescript
 it('describes expected behavior', () => {
@@ -30,7 +30,7 @@ it('describes expected behavior', () => {
 });
 ```
 
-## Test Naming Conventions
+## 测试命名约定
 
 ```typescript
 // Pattern: [unit] [expected behavior] [condition]
@@ -42,7 +42,7 @@ describe('TaskService.createTask', () => {
 });
 ```
 
-## Common Assertions
+## 常见断言
 
 ```typescript
 // Equality
@@ -81,9 +81,9 @@ await expect(asyncFn()).resolves.toBe(value);
 await expect(asyncFn()).rejects.toThrow(Error);
 ```
 
-## Mocking Patterns
+## Mock 模式
 
-### Mock Functions
+### Mock 函数
 
 ```typescript
 const mockFn = jest.fn();
@@ -96,7 +96,7 @@ expect(mockFn).toHaveBeenCalledWith('arg1', 'arg2');
 expect(mockFn).toHaveBeenCalledTimes(3);
 ```
 
-### Mock Modules
+### Mock 模块
 
 ```typescript
 // Mock an entire module
@@ -111,7 +111,7 @@ jest.mock('./utils', () => ({
 }));
 ```
 
-### Mock at Boundaries Only
+### 仅在边界处 Mock
 
 ```
 Mock these:                    Don't mock these:
@@ -122,7 +122,7 @@ Mock these:                    Don't mock these:
 └── Time/Date (when needed)    └── Pure functions
 ```
 
-## React/Component Testing
+## React/组件测试
 
 ```tsx
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
@@ -154,7 +154,7 @@ describe('TaskForm', () => {
 });
 ```
 
-## API / Integration Testing
+## API / 集成测试
 
 ```typescript
 import request from 'supertest';
@@ -194,7 +194,7 @@ describe('POST /api/tasks', () => {
 });
 ```
 
-## E2E Testing (Playwright)
+## E2E 测试（Playwright）
 
 ```typescript
 import { test, expect } from '@playwright/test';
@@ -221,15 +221,15 @@ test('user can create and complete a task', async ({ page }) => {
 });
 ```
 
-## Test Anti-Patterns
+## 测试反模式
 
-| Anti-Pattern | Problem | Better Approach |
+| 反模式 | 问题 | 更好的做法 |
 |---|---|---|
-| Testing implementation details | Breaks on refactor | Test inputs/outputs |
-| Snapshot everything | No one reviews snapshot diffs | Assert specific values |
-| Shared mutable state | Tests pollute each other | Setup/teardown per test |
-| Testing third-party code | Wastes time, not your bug | Mock the boundary |
-| Skipping tests to pass CI | Hides real bugs | Fix or delete the test |
-| Using `test.skip` permanently | Dead code | Remove or fix it |
-| Overly broad assertions | Doesn't catch regressions | Be specific |
-| No async error handling | Swallowed errors, false passes | Always `await` async tests |
+| 测试实现细节 | 重构即破坏 | 测试输入/输出 |
+| 一切皆快照 | 没人评审快照 diff | 断言具体的值 |
+| 共享可变状态 | 测试互相污染 | 每个测试单独设置/清理 |
+| 测试第三方代码 | 浪费时间，不是你的 bug | Mock 边界 |
+| 跳过测试以通过 CI | 掩盖真正的 bug | 修复或删除测试 |
+| 永久使用 `test.skip` | 死代码 | 移除或修复它 |
+| 断言过于宽泛 | 无法捕获回归 | 要具体 |
+| 无异步错误处理 | 错误被吞掉、假通过 | 始终 `await` 异步测试 |

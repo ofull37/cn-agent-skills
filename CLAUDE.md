@@ -1,10 +1,10 @@
 # agent-skills
 
-This is the agent-skills project — a collection of production-grade engineering skills for AI coding agents.
+这是 agent-skills 项目——一个面向 AI 编码智能体的生产级工程技能合集。
 
-> **Scope:** This file configures agents working on the [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) repository itself, not other projects. Don't copy it into another project or a global agent configuration; the reusable assets are the skills in `skills/`.
+> **范围：** 本文件用于配置在 [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) 仓库上工作的智能体，而非其他项目。请勿将其复制到其他项目或全局 agent 配置中；可复用的资产是 `skills/` 下的技能。
 
-## Project Structure
+## 项目结构
 
 ```
 skills/       → Core skills (SKILL.md per directory)
@@ -16,45 +16,45 @@ evals/        → Skill eval cases + framework (see evals/README.md)
 docs/         → Setup guides for different tools
 ```
 
-## Skills by Phase
+## 按阶段划分的技能
 
-**Define:** interview-me, idea-refine, spec-driven-development
-**Plan:** planning-and-task-breakdown
-**Build:** incremental-implementation, test-driven-development, context-engineering, source-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
-**Verify:** browser-testing-with-devtools, debugging-and-error-recovery
-**Review:** code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
-**Ship:** git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs, observability-and-instrumentation, shipping-and-launch
+**定义：** interview-me, idea-refine, spec-driven-development
+**规划：** planning-and-task-breakdown
+**构建：** incremental-implementation, test-driven-development, context-engineering, source-driven-development, doubt-driven-development, frontend-ui-engineering, api-and-interface-design
+**验证：** browser-testing-with-devtools, debugging-and-error-recovery
+**评审：** code-review-and-quality, code-simplification, security-and-hardening, performance-optimization
+**发布：** git-workflow-and-versioning, ci-cd-and-automation, deprecation-and-migration, documentation-and-adrs, observability-and-instrumentation, shipping-and-launch
 
-## Conventions
+## 约定
 
-- Every skill lives in `skills/<name>/SKILL.md`
-- YAML frontmatter with `name` and `description` fields
-- Description starts with what the skill does (third person), followed by trigger conditions ("Use when...")
-- Every skill has: Overview, When to Use, Process, Common Rationalizations, Red Flags, Verification
-- Shared references are in the root `references/` directory; the emerging convention for self-contained, distributable skills keeps a skill's own references inside `skills/<name>/references/`
-- Supporting files only created when content exceeds 100 lines
+- 每个技能都位于 `skills/<name>/SKILL.md`
+- 带 `name` 和 `description` 字段的 YAML frontmatter
+- 描述以技能的功能开头（第三人称），后接触发条件（「Use when...」）
+- 每个技能都包含：概述、何时使用、流程、常见合理化借口、危险信号、验证
+- 共享参考资料位于根目录 `references/`；对于自包含、可分发的技能，新兴的约定是将技能自身的参考资料放在 `skills/<name>/references/` 内
+- 只有当内容超过 100 行时才创建辅助文件
 
-## Contributing
+## 参与贡献
 
-Before adding a new skill or significantly reworking an existing one, run the pre-flight checks in [CONTRIBUTING.md](CONTRIBUTING.md#before-proposing-a-new-skill): search the catalog, check open PRs, confirm the idea fits [docs/skill-anatomy.md](docs/skill-anatomy.md), and justify the gap. Prefer extending an existing skill over adding a near-duplicate. CONTRIBUTING.md is the single source of truth for this workflow; do not restate its checklist here or elsewhere, link to it.
+在添加新技能或大幅重构现有技能之前，先运行 [CONTRIBUTING.md](CONTRIBUTING.md#before-proposing-a-new-skill) 中的预检清单：搜索目录、检查开放的 PR、确认想法符合 [docs/skill-anatomy.md](docs/skill-anatomy.md)，并说明该空白的必要性。优先扩展现有技能，而不是添加近乎重复的新技能。CONTRIBUTING.md 是本工作流的唯一权威来源；请勿在此处或其他地方重述其清单，直接链接到它。
 
-## Commands
+## 命令
 
-- `npm test` — Not applicable (this is a documentation project)
-- Validate: Check that all SKILL.md files have valid YAML frontmatter with name and description
-- Evals: `node scripts/run-evals.js` — trigger/routing evals for every skill (CI); `--behavioral <skill>` for graded runs
+- `npm test` —— 不适用（这是一个文档项目）
+- 校验：检查所有 SKILL.md 文件是否具有有效的、包含 name 和 description 的 YAML frontmatter
+- 评测：`node scripts/run-evals.js` —— 对每个技能进行触发/路由评测（CI）；`--behavioral <skill>` 用于分级运行
 
-## Pull Requests
+## 拉取请求
 
-PRs target the upstream repository's default branch. In a typical fork setup the upstream remote is `upstream` and your fork is `origin`, but the exact remote names are not what matters here.
+PR 面向上游仓库的默认分支。在典型的 fork 设置中，上游 remote 是 `upstream`，你的 fork 是 `origin`，但确切的 remote 名称在这里并不重要。
 
-- Before opening a PR, search the upstream repository's open PRs and issues for work that touches the same files or rules. If any overlaps, coordinate (build on it, align your rules with it, or rebase after it merges) instead of opening a conflicting PR.
-- Prefer small, focused PRs over large refactors of widely shared files (for example, files under `scripts/`), which are more likely to collide with in-flight work.
+- 在打开 PR 之前，搜索上游仓库中涉及相同文件或规则的开放 PR 和 issue。如有重叠，请协调（在其基础上构建、让你的规则与其对齐，或在其合并后 rebase），而不是打开一个冲突的 PR。
+- 优先提交小而聚焦的 PR，而不是对广泛共享的文件（例如 `scripts/` 下的文件）进行大型重构，后者更可能与进行中的工作发生冲突。
 
-## Boundaries
+## 边界
 
-- Always: Run the CONTRIBUTING.md pre-flight checks before creating a new skill directory
-- Always: Follow the skill-anatomy.md format for new skills
-- Always: Check the upstream repo's open PRs and issues for overlap before opening a new PR
-- Never: Add skills that are vague advice instead of actionable processes
-- Never: Duplicate content between skills — reference other skills instead
+- 始终：在创建新技能目录之前运行 CONTRIBUTING.md 预检清单
+- 始终：新技能遵循 skill-anatomy.md 格式
+- 始终：打开新 PR 之前检查上游仓库的开放 PR 和 issue 是否存在重叠
+- 绝不：添加泛泛而谈的建议而非可执行流程的技能
+- 绝不：在技能之间重复内容——改为引用其他技能

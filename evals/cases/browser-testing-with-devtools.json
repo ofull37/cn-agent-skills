@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Use Chrome DevTools to figure out why the checkout button click does nothing",
+        "prompt": "使用 Chrome DevTools 查明为什么点击结账按钮没有任何反应",
         "top_k": 3
       },
       {
-        "prompt": "Inspect the network requests the dashboard makes when it first loads",
+        "prompt": "检查仪表盘首次加载时发出的网络请求",
         "top_k": 3
       },
       {
-        "prompt": "Verify in a real browser that the form submits and the data persists in localStorage",
+        "prompt": "在真实浏览器中验证表单能提交且数据能持久化到 localStorage",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Write a spec for the new billing feature before we start",
+        "prompt": "在开始之前为新计费功能编写规格说明",
         "owner": "spec-driven-development"
       },
       {
-        "prompt": "Break this PRD into ordered implementation tasks",
+        "prompt": "把这个 PRD 拆分成有序的实现任务",
         "owner": "planning-and-task-breakdown"
       }
     ]
@@ -29,15 +29,15 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "The signup form renders but submitting it appears to do nothing. Verify the real behavior in the browser and report findings.",
-      "expected_output": "Runtime evidence from the browser: console errors, network activity, DOM state, and a diagnosis",
+      "prompt": "注册表单能渲染，但提交似乎没有任何反应。请在浏览器中验证真实行为并报告发现。",
+      "expected_output": "来自浏览器的运行时证据：控制台错误、网络活动、DOM 状态以及诊断结论",
       "files": [
         "browser-testing-with-devtools"
       ],
       "expectations": [
-        "Findings are grounded in observed runtime data (console, network, DOM), not static code reading alone",
-        "The report distinguishes what was observed from what is inferred",
-        "A concrete next step or fix hypothesis is provided"
+        "发现必须基于观察到的运行时数据（控制台、网络、DOM），而非仅靠静态代码阅读",
+        "报告需区分观察到的事实与推断出的结论",
+        "需要给出具体的下一步行动或修复假设"
       ]
     }
   ]

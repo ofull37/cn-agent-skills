@@ -3,48 +3,48 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Make this page responsive and WCAG compliant",
+        "prompt": "让这个页面响应式并符合 WCAG",
         "top_k": 1
       },
       {
-        "prompt": "Build an accessible modal component with keyboard support",
+        "prompt": "构建一个支持键盘、可访问的模态框组件",
         "top_k": 3
       },
       {
-        "prompt": "Make the pricing page accessible and responsive on mobile",
+        "prompt": "让定价页面可访问并在移动端响应式",
         "top_k": 1
       },
       {
-        "prompt": "Refactor the dashboard into reusable components with sane state management",
+        "prompt": "把仪表盘重构为可复用组件，并配以合理的状态管理",
         "top_k": 3
       },
       {
-        "prompt": "Rework the profile page into reusable components with proper state management",
+        "prompt": "把个人资料页改造成可复用组件，并配以恰当的状态管理",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Optimize the slow database indexes",
+        "prompt": "优化缓慢的数据库索引",
         "owner": "performance-optimization"
       },
       {
-        "prompt": "Tag and publish the release"
+        "prompt": "为发布打标签并发布"
       }
     ]
   },
   "evals": [
     {
       "id": 1,
-      "prompt": "Build a dropdown menu component for the design system.",
-      "expected_output": "An accessible, keyboard-navigable component following project conventions",
+      "prompt": "为设计系统构建一个下拉菜单组件。",
+      "expected_output": "一个可访问、可通过键盘导航并遵循项目约定的组件",
       "files": [
         "frontend-ui-engineering"
       ],
       "expectations": [
-        "Keyboard interaction and focus management are implemented, not just mouse clicks",
-        "ARIA roles or semantic elements are used correctly",
-        "Component state is managed deliberately rather than ad hoc"
+        "要实现键盘交互和焦点管理，而不只是鼠标点击",
+        "要正确使用 ARIA 角色或语义化元素",
+        "组件状态应经过审慎管理，而不是临时拼凑"
       ]
     }
   ]

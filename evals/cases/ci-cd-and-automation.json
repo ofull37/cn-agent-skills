@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Set up a GitHub Actions pipeline that runs the tests on every pull request",
+        "prompt": "搭建一个在每个拉取请求上运行测试的 GitHub Actions 流水线",
         "top_k": 3
       },
       {
-        "prompt": "Add a deploy stage to the pipeline with a manual approval gate",
+        "prompt": "在流水线中添加带人工审批门的部署阶段",
         "top_k": 3
       },
       {
-        "prompt": "Automate the quality gates so nothing merges without passing checks",
+        "prompt": "自动化质量门禁，确保未通过检查的内容不会被合并",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Refactor this function so it is easier to read",
+        "prompt": "重构这个函数使其更易读",
         "owner": "code-simplification"
       },
       {
-        "prompt": "Add structured logging to the checkout service",
+        "prompt": "为结账服务添加结构化日志",
         "owner": "observability-and-instrumentation"
       }
     ]
@@ -29,16 +29,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Create a CI pipeline for a Node project: install, lint, test on every PR, and block merge on failure.",
-      "expected_output": "A working workflow definition with correct triggers, steps, and failure behavior",
+      "prompt": "为一个 Node 项目创建 CI 流水线：在每个 PR 上安装、lint、测试，并在失败时阻止合并。",
+      "expected_output": "一个可用的工作流定义，包含正确的触发条件、步骤和失败行为",
       "files": [
         "ci-cd-and-automation"
       ],
       "expectations": [
-        "The workflow triggers on pull requests",
-        "Failure of any quality gate fails the pipeline run",
-        "Steps are ordered logically and cache or setup steps are sane",
-        "No secrets are hardcoded in the workflow"
+        "工作流应在拉取请求时触发",
+        "任一质量门禁失败都应导致流水线运行失败",
+        "步骤顺序要符合逻辑，缓存或设置步骤要合理",
+        "工作流中不得硬编码任何机密信息"
       ]
     }
   ]

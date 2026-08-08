@@ -1,82 +1,82 @@
 ---
 name: security-and-hardening
-description: Hardens code against vulnerabilities. Use when handling user input, authentication, data storage, or external integrations. Use when building any feature that accepts untrusted data, manages user sessions, or interacts with third-party services.
+description: 加固代码以抵御漏洞、注入和其他攻击。当处理用户输入、认证、数据存储或外部集成时使用。当构建任何接受不可信数据、管理用户会话或与第三方服务交互的功能时使用。
 ---
 
-# Security and Hardening
+# 安全与强化
 
-## Overview
+## 概述
 
-Security-first development practices for web applications. Treat every external input as hostile, every secret as sacred, and every authorization check as mandatory. Security isn't a phase — it's a constraint on every line of code that touches user data, authentication, or external systems.
+面向 Web 应用的安全优先开发实践。把每一个外部输入都当作敌意的，每一个密钥都当作神圣的，每一次授权检查都是强制的。安全不是一个阶段——它是对每一行触碰用户数据、认证或外部系统的代码的约束。
 
-## When to Use
+## 何时使用
 
-- Building anything that accepts user input
-- Implementing authentication or authorization
-- Storing or transmitting sensitive data
-- Integrating with external APIs or services
-- Adding file uploads, webhooks, or callbacks
-- Handling payment or PII data
+- 构建任何接受用户输入的内容
+- 实现认证或授权
+- 存储或传输敏感数据
+- 集成外部 API 或服务
+- 添加文件上传、webhook 或回调
+- 处理支付或 PII 数据
 
-## Process: Threat Model First
+## 流程：先做威胁建模
 
-Controls bolted on without a threat model are guesses. Before hardening, spend five minutes thinking like an attacker:
+不加威胁模型就硬塞控制措施，那是在瞎猜。在强化之前，花五分钟像攻击者一样思考：
 
-1. **Map the trust boundaries.** Where does untrusted data cross into your system? HTTP requests, form fields, file uploads, webhooks, third-party APIs, message queues, and **LLM output**. Every boundary is attack surface.
-2. **Name the assets.** What's worth stealing or breaking? Credentials, PII, payment data, admin actions, money movement.
-3. **Run STRIDE over each boundary** — a quick lens, not a ceremony:
+1. **画出信任边界。** 不可信数据在哪里进入你的系统？HTTP 请求、表单字段、文件上传、webhook、第三方 API、消息队列，以及 **LLM 输出**。每条边界都是攻击面。
+2. **说出资产。** 什么东西值得被偷或被破坏？凭据、PII、支付数据、管理员操作、资金流转。
+3. **对每条边界跑一遍 STRIDE**——它是一个快速透镜，不是走流程：
 
-| Threat | Ask | Typical mitigation |
+| 威胁 | 要问的 | 典型缓解措施 |
 |---|---|---|
-| **S**poofing | Can someone impersonate a user/service? | Authentication, signature verification |
-| **T**ampering | Can data be altered in transit or at rest? | Integrity checks, parameterized queries, HTTPS |
-| **R**epudiation | Can an action be denied later? | Audit logging of security events |
-| **I**nformation disclosure | Can data leak? | Encryption, field allowlists, generic errors |
-| **D**enial of service | Can it be overwhelmed? | Rate limiting, input size caps, timeouts |
-| **E**levation of privilege | Can a user gain rights they shouldn't? | Authorization checks, least privilege |
+| **S**poofing（仿冒） | 有人能冒充用户/服务吗？ | 认证、签名验证 |
+| **T**ampering（篡改） | 数据能在传输中或静态时被改动吗？ | 完整性检查、参数化查询、HTTPS |
+| **R**epudiation（抵赖） | 之后能否否认一个动作？ | 安全事件的审计日志 |
+| **I**nformation disclosure（信息泄露） | 数据会泄露吗？ | 加密、字段白名单、通用错误消息 |
+| **D**enial of service（拒绝服务） | 它会被压垮吗？ | 速率限制、输入大小上限、超时 |
+| **E**levation of privilege（权限提升） | 用户能获得不应有的权限吗？ | 授权检查、最小权限 |
 
-4. **Write abuse cases next to use cases.** For each feature, ask "how would I misuse this?" — then make that your first test.
+4. **在用例旁边写下滥用用例。** 对每个功能，问「我会怎么滥用它？」——然后把那变成你的第一个测试。
 
-If you can't name the trust boundaries for a feature, you're not ready to secure it. This is OWASP **A04: Insecure Design** — most breaches begin in design, not code.
+如果你说不出一个功能的信任边界，你还没准备好保护它。这就是 OWASP **A04：不安全的设计**——大多数漏洞始于设计，而不是代码。
 
-## The Three-Tier Boundary System
+## 三层边界系统
 
-### Always Do (No Exceptions)
+### 始终要做（无例外）
 
-- **Validate all external input** at the system boundary (API routes, form handlers)
-- **Parameterize all database queries** — never concatenate user input into SQL
-- **Encode output** to prevent XSS (use framework auto-escaping, don't bypass it)
-- **Use HTTPS** for all external communication
-- **Hash passwords** with bcrypt/scrypt/argon2 (never store plaintext)
-- **Set security headers** (CSP, HSTS, X-Frame-Options, X-Content-Type-Options)
-- **Use httpOnly, secure, sameSite cookies** for sessions
-- **Run the detected package manager's native audit** against the committed lockfile before every release
+- 在系统边界**验证所有外部输入**（API 路由、表单处理器）
+- **参数化所有数据库查询**——绝不把用户输入拼接进 SQL
+- **编码输出**以防止 XSS（使用框架的自动转义，不要绕过它）
+- 所有外部通信都**使用 HTTPS**
+- 用 bcrypt/scrypt/argon2 **对密码进行哈希**（绝不存储明文）
+- **设置安全响应头**（CSP、HSTS、X-Frame-Options、X-Content-Type-Options）
+- 会话使用 **httpOnly、secure、sameSite cookie**
+- 每次发布前，**针对已提交的 lockfile 运行检测到的包管理器的原生 audit**
 
-### Ask First (Requires Human Approval)
+### 先询问（需要人工批准）
 
-- Adding new authentication flows or changing auth logic
-- Storing new categories of sensitive data (PII, payment info)
-- Adding new external service integrations
-- Changing CORS configuration
-- Adding file upload handlers
-- Modifying rate limiting or throttling
-- Granting elevated permissions or roles
+- 添加新的认证流程或更改认证逻辑
+- 存储新类别的敏感数据（PII、支付信息）
+- 添加新的外部服务集成
+- 更改 CORS 配置
+- 添加文件上传处理器
+- 修改速率限制或节流
+- 授予提升的权限或角色
 
-### Never Do
+### 绝不做的
 
-- **Never commit secrets** to version control (API keys, passwords, tokens)
-- **Never log sensitive data** (passwords, tokens, full credit card numbers)
-- **Never trust client-side validation** as a security boundary
-- **Never disable security headers** for convenience
-- **Never use `eval()` or `innerHTML`** with user-provided data
-- **Never store sessions in client-accessible storage** (localStorage for auth tokens)
-- **Never expose stack traces** or internal error details to users
+- **绝不把密钥提交到版本控制**（API 密钥、密码、令牌）
+- **绝不记录敏感数据**（密码、令牌、完整信用卡号）
+- **绝不把客户端验证当作安全边界**
+- **绝不为图方便禁用安全响应头**
+- **绝不对用户提供的数据使用 `eval()` 或 `innerHTML`**
+- **绝不把会话存储在客户端可访问的存储中**（用 localStorage 存认证令牌）
+- **绝不向用户暴露堆栈跟踪**或内部错误细节
 
-## OWASP Top 10 Prevention Patterns
+## OWASP Top 10 防护模式
 
-These are prevention patterns, not a ranking. For the 2021 ordering, see the quick-reference table in `references/security-checklist.md`.
+这些是防护模式，不是排名。2021 版的排序参见 `references/security-checklist.md` 中的速查表。
 
-### Injection (SQL, NoSQL, OS Command)
+### 注入（SQL、NoSQL、操作系统命令）
 
 ```typescript
 // BAD: SQL injection via string concatenation
@@ -89,7 +89,7 @@ const user = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
 const user = await prisma.user.findUnique({ where: { id: userId } });
 ```
 
-### Broken Authentication
+### 失效的身份认证
 
 ```typescript
 // Password hashing
@@ -113,7 +113,7 @@ app.use(session({
 }));
 ```
 
-### Cross-Site Scripting (XSS)
+### 跨站脚本（XSS）
 
 ```typescript
 // BAD: Rendering user input as HTML
@@ -127,7 +127,7 @@ import DOMPurify from 'dompurify';
 const clean = DOMPurify.sanitize(userInput);
 ```
 
-### Broken Access Control
+### 失效的访问控制
 
 ```typescript
 // Always check authorization, not just authentication
@@ -147,7 +147,7 @@ app.patch('/api/tasks/:id', authenticate, async (req, res) => {
 });
 ```
 
-### Security Misconfiguration
+### 安全配置错误
 
 ```typescript
 // Security headers (use helmet for Express)
@@ -172,7 +172,7 @@ app.use(cors({
 }));
 ```
 
-### Sensitive Data Exposure
+### 敏感数据暴露
 
 ```typescript
 // Never return sensitive fields in API responses
@@ -186,9 +186,9 @@ const API_KEY = process.env.STRIPE_API_KEY;
 if (!API_KEY) throw new Error('STRIPE_API_KEY not configured');
 ```
 
-### Server-Side Request Forgery (SSRF)
+### 服务器端请求伪造（SSRF）
 
-Any time the server fetches a URL the user influenced — webhooks, "import from URL", image proxies, link previews — an attacker can aim it at internal services (cloud metadata, `localhost`, private IPs).
+每当服务器获取一个受用户影响的 URL——webhook、「从 URL 导入」、图片代理、链接预览——攻击者都可能把它指向内部服务（云元数据、`localhost`、私有 IP）。
 
 ```typescript
 // BAD: fetch whatever the user gives you
@@ -215,13 +215,13 @@ async function assertSafeUrl(raw: string): Promise<URL> {
 await fetch(await assertSafeUrl(req.body.webhookUrl), { redirect: 'error' });
 ```
 
-The `range() !== 'unicast'` check covers loopback, link-local `169.254.169.254` (cloud metadata, the #1 SSRF target), private, and unique-local ranges across IPv4 and IPv6.
+`range() !== 'unicast'` 检查覆盖了 loopback、链路本地 `169.254.169.254`（云元数据，SSRF 的头号目标）、私有地址和唯一本地地址范围，同时涵盖 IPv4 和 IPv6。
 
-**Caveat — this still has a TOCTOU gap.** `fetch` resolves DNS again after the check, so an attacker using a short-TTL record can rebind to an internal IP between validation and connection. For high-risk surfaces, resolve once and connect to the pinned IP, or put a filtering agent in front (`request-filtering-agent` / `ssrf-req-filter`).
+**注意事项——这仍然有一个 TOCTOU 缺口。** `fetch` 在检查之后会再次解析 DNS，因此使用短 TTL 记录的攻击者可以在校验与连接之间重绑定到内部 IP。对于高风险表面，解析一次并连接到钉死的 IP，或者在前面放一个过滤代理（`request-filtering-agent` / `ssrf-req-filter`）。
 
-## Input Validation Patterns
+## 输入验证模式
 
-### Schema Validation at Boundaries
+### 在边界的 Schema 验证
 
 ```typescript
 import { z } from 'zod';
@@ -251,7 +251,7 @@ app.post('/api/tasks', async (req, res) => {
 });
 ```
 
-### File Upload Safety
+### 文件上传安全
 
 ```typescript
 // Restrict file types and sizes
@@ -269,9 +269,9 @@ function validateUpload(file: UploadedFile) {
 }
 ```
 
-## Triaging Dependency Audit Results
+## 分诊依赖审计结果
 
-Package-manager audits report known advisories; they do not prove a package is trustworthy or that vulnerable code is reachable. Use this decision tree:
+包管理器的 audit 报告的是已知公告；它们并不能证明一个包是可信的，也不能证明有漏洞的代码是可到达的。使用这个决策树：
 
 ```
 The native package-manager audit reports a vulnerability
@@ -289,27 +289,27 @@ The native package-manager audit reports a vulnerability
     └── Track and fix during regular dependency updates
 ```
 
-**Key questions:**
-- Is the vulnerable function actually called in your code path?
-- Is the dependency a runtime dependency or dev-only?
-- Is the vulnerability exploitable given your deployment context (e.g., a server-side vulnerability in a client-only app)?
+**关键问题：**
+- 有漏洞的函数真的在你的代码路径中被调用吗？
+- 这个依赖是运行时依赖还是仅开发依赖？
+- 结合你的部署上下文，这个漏洞是否可利用（例如，仅客户端应用中的服务端漏洞）？
 
-When you defer a fix, document the reason and set a review date.
+当你推迟修复时，记录原因并设定一个复查日期。
 
-### Supply-Chain Hygiene
+### 供应链卫生
 
-Do not assume npm or treat the nearest manifest as the install root. Apply this order:
+不要默认信任 npm，也不要拿最近的 manifest 当作安装根。按这个顺序做：
 
-1. **Find the installation boundary and manager.** Use the workspace root that owns the lockfile, or an independent nested project only when it is outside that workspace. There, corroborate `packageManager` (when present), the lockfile, and CI; stop on disagreement or competing lockfiles. Pin the manager version and use the matrix in `references/security-checklist.md`.
-2. **Block dependency scripts before first execution.** Bootstrap with scripts disabled or a documented fail-closed policy, inspect the pending script source, approve only the minimum required packages, commit the policy, then verify with a clean frozen/immutable install. Never blanket-approve scripts.
+1. **找到安装边界和包管理器。** 使用拥有 lockfile 的工作区根，或者仅当独立嵌套项目位于该工作区之外时才使用它。在那里，交叉核对 `packageManager`（若存在）、lockfile 和 CI；在发现不一致或出现互相竞争的 lockfile 时停下来。钉死包管理器版本，并使用 `references/security-checklist.md` 中的矩阵。
+2. **在首次执行前阻断依赖脚本。** 以禁用脚本或记录在案的默认拒绝（fail-closed）策略来引导安装，检查待执行的脚本源码，只批准最小必需的包，提交该策略，然后用干净的冻结/不可变安装来验证。绝不不加区分地批准脚本。
 
-Audits only find known advisories; they do not catch a newly malicious or typosquatted package. Therefore:
+审计只能发现已知公告；它们捕获不到一个新变恶意或被域名仿冒的包。因此：
 
-- **Never apply forced audit remediation automatically** (`npm audit fix --force` or equivalent). Preview the remediation, read changelogs, and test each resulting upgrade; forced fixes may cross declared dependency ranges.
-- **Verify registry signatures and provenance where supported** (`npm audit signatures`, `pnpm audit signatures`) and treat absence as a signal to investigate, not automatic proof of compromise.
-- **Review new dependencies, lockfile diffs, and script-policy changes together** — ownership, maintenance, release age, provenance, transitive graph, and typosquats such as `cross-env` vs `crossenv` (OWASP **A06**, **LLM03**).
+- **绝不自动应用强制的审计修复**（`npm audit fix --force` 或等价物）。预览修复方案、阅读变更日志，并测试每一个产生的升级；强制修复可能跨越声明的依赖范围。
+- **在支持的地方验证注册表签名和来源**（`npm audit signatures`、`pnpm audit signatures`），并把缺失视为需要调查的信号，而不是被攻破的自动证明。
+- **把新依赖、lockfile diff 和脚本策略变更放在一起评审**——所有权、维护情况、发布年龄、来源、传递依赖图，以及诸如 `cross-env` vs `crossenv` 的域名仿冒（OWASP **A06**、**LLM03**）。
 
-## Rate Limiting
+## 速率限制
 
 ```typescript
 import rateLimit from 'express-rate-limit';
@@ -329,7 +329,7 @@ app.use('/api/auth/', rateLimit({
 }));
 ```
 
-## Secrets Management
+## 密钥管理
 
 ```
 .env files:
@@ -345,24 +345,24 @@ app.use('/api/auth/', rateLimit({
   *.key
 ```
 
-**Always check before committing:**
+**提交前始终检查：**
 ```bash
 # Check for accidentally staged secrets
 git diff --cached | grep -i "password\|secret\|api_key\|token"
 ```
 
-**If a secret is ever committed, rotate it.** Deleting the line or rewriting history is not enough — assume it's compromised the moment it reaches a remote. Revoke and reissue the key first, then purge it from history.
+**如果密钥被提交过，就轮换它。** 删除那一行或重写历史是不够的——一旦它到达远端，就假定它已被攻破。先吊销并重新签发密钥，然后从历史中清除。
 
-## Securing AI / LLM Features
+## 保护 AI / LLM 功能
 
-If your app calls an LLM — chatbots, summarizers, agents, RAG — it inherits a new attack surface. Map it to the [OWASP Top 10 for LLM Applications (2025)](https://genai.owasp.org/llm-top-10/):
+如果你的应用调用 LLM——聊天机器人、摘要器、agent、RAG——它就继承了一个新的攻击面。把它映射到 [OWASP Top 10 for LLM Applications (2025)](https://genai.owasp.org/llm-top-10/)：
 
-- **Treat all model output as untrusted input (LLM05: Improper Output Handling).** Never pass LLM output straight into `eval`, SQL, a shell, `innerHTML`, or a file path. Validate and encode it exactly as you would raw user input.
-- **Assume prompts can be hijacked (LLM01: Prompt Injection).** Untrusted text in the context window — a user message, a fetched web page, a PDF — can carry instructions. The system prompt is not a security boundary; enforce permissions in code, not in the prompt.
-- **Keep secrets and other users' data out of prompts (LLM02 / LLM07).** Anything in the context can be echoed back. Don't put API keys, cross-tenant data, or the full system prompt where the model can repeat it.
-- **Constrain tool and agent permissions (LLM06: Excessive Agency).** Scope tools to the minimum, require confirmation for destructive or irreversible actions, and validate every tool argument.
-- **Bound consumption (LLM10: Unbounded Consumption).** Cap tokens, request rate, and loop/recursion depth so a crafted input can't run up cost or hang the system.
-- **Isolate retrieval data (LLM08: Vector and Embedding Weaknesses).** In RAG, treat the vector store as a trust boundary: partition embeddings per tenant so one user can't retrieve another's data, and validate documents before indexing so poisoned content can't steer answers.
+- **把模型的所有输出都当作不可信输入（LLM05：输出处理不当）。** 绝不把 LLM 输出直接传进 `eval`、SQL、shell、`innerHTML` 或文件路径。像对待原始用户输入一样验证和编码它。
+- **假设提示词可能被劫持（LLM01：提示词注入）。** 上下文窗口中的不可信文本——一条用户消息、一个抓取的网页、一个 PDF——都可能携带指令。系统提示词不是安全边界；在代码中执行权限，而不是在提示词中。
+- **把密钥和其他用户的数据挡在提示词之外（LLM02 / LLM07）。** 上下文中的任何内容都可能被原样回显。不要把 API 密钥、跨租户数据或完整系统提示词放在模型可能复述的地方。
+- **约束工具和 agent 的权限（LLM06：过度代理）。** 把工具范围缩到最小，对破坏性或不可逆操作要求确认，并验证每一个工具参数。
+- **限制消耗（LLM10：无界消耗）。** 封顶 token、请求速率和循环/递归深度，这样精心构造的输入就不能耗尽成本或拖垮系统。
+- **隔离检索数据（LLM08：向量与嵌入弱点）。** 在 RAG 中，把向量库当作一条信任边界：按租户划分嵌入，这样一个人就检索不到另一个人的数据；并在索引前验证文档，这样投毒的内容就不能左右回答。
 
 ```typescript
 // BAD: trusting model output as a command or as markup
@@ -381,7 +381,7 @@ await runAllowlistedAction(intent.action, intent.params);
 container.textContent = await llm.reply(userMessage);
 ```
 
-## Security Review Checklist
+## 安全评审清单
 
 ```markdown
 ### Authentication
@@ -422,46 +422,47 @@ container.textContent = await llm.reply(userMessage);
 - [ ] Secrets and other users' data kept out of prompts
 - [ ] Tool/agent permissions scoped; destructive actions require confirmation
 ```
-## See Also
 
-For detailed security checklists and pre-commit verification steps, see `references/security-checklist.md`.
+## 参见
 
-## Common Rationalizations
+详细的安全检查清单和提交前验证步骤参见 `references/security-checklist.md`。
 
-| Rationalization | Reality |
+## 常见合理化借口
+
+| 合理化借口 | 现实 |
 |---|---|
-| "This is an internal tool, security doesn't matter" | Internal tools get compromised. Attackers target the weakest link. |
-| "We'll add security later" | Security retrofitting is 10x harder than building it in. Add it now. |
-| "No one would try to exploit this" | Automated scanners will find it. Security by obscurity is not security. |
-| "The framework handles security" | Frameworks provide tools, not guarantees. You still need to use them correctly. |
-| "It's just a prototype" | Prototypes become production. Security habits from day one. |
-| "Threat modeling is overkill here" | Five minutes of "how would I attack this?" prevents the design flaws no control can patch later. |
-| "It's just LLM output, it's only text" | That "text" can be a SQL statement, a script tag, or a shell command. Treat it like any untrusted input. |
-| "The audit passed, so the dependency is safe" | Audits match known advisories. They do not detect a newly malicious package or make unreviewed install scripts safe to execute. |
+| 「这是内部工具，安全无所谓」 | 内部工具也会被攻破。攻击者瞄准最薄弱的环节。 |
+| 「我们以后再补安全」 | 安全返工比一开始就做难 10 倍。现在就加。 |
+| 「没人会想着利用这个」 | 自动化扫描器会发现它。靠隐蔽来安全不是安全。 |
+| 「框架会处理安全」 | 框架提供的是工具，不是保证。你仍然需要正确地使用它们。 |
+| 「只是个原型而已」 | 原型会变成生产。安全习惯从第一天就要有。 |
+| 「这里的威胁建模是小题大做」 | 花五分钟想「我会怎么攻击这个？」能防止那些事后没有任何控制措施能修补的设计缺陷。 |
+| 「只是 LLM 输出而已，只是文本」 | 那段「文本」可以是一条 SQL 语句、一个 script 标签或一条 shell 命令。像对待任何不可信输入一样对待它。 |
+| 「audit 通过了，所以这个依赖是安全的」 | 审计匹配的是已知公告。它检测不出一个新变恶意的包，也不会让未经评审的安装脚本变得安全可执行。 |
 
-## Red Flags
+## 危险信号
 
-- User input passed directly to database queries, shell commands, or HTML rendering
-- Secrets in source code or commit history
-- API endpoints without authentication or authorization checks
-- Missing CORS configuration or wildcard (`*`) origins
-- No rate limiting on authentication endpoints
-- Stack traces or internal errors exposed to users
-- Dependencies with known critical vulnerabilities, competing lockfiles at one installation boundary, non-reproducible installs, or blanket-approved scripts
-- Server fetches user-supplied URLs without an allowlist (SSRF)
-- LLM/model output passed into a query, the DOM, a shell, or `eval`
-- Secrets, PII, or the full system prompt placed inside an LLM context window
+- 用户输入直接传给数据库查询、shell 命令或 HTML 渲染
+- 源代码或提交历史中的密钥
+- 没有认证或授权检查的 API 端点
+- 缺失 CORS 配置或通配符（`*`）来源
+- 认证端点没有速率限制
+- 向用户暴露堆栈跟踪或内部错误
+- 带有已知严重漏洞的依赖、同一安装边界下互相竞争的 lockfile、不可复现的安装、或未经区分地批准的脚本
+- 服务器在无白名单的情况下获取用户提供的 URL（SSRF）
+- LLM/模型输出被传入查询、DOM、shell 或 `eval`
+- 密钥、PII 或完整系统提示词被放进 LLM 上下文窗口
 
-## Verification
+## 验证
 
-After implementing security-relevant code:
+在实现与安全相关的代码之后：
 
-- [ ] The native audit has no unmitigated reachable critical/high findings; CI preserves the authoritative lockfile and blocks unreviewed dependency scripts
-- [ ] No secrets in source code or git history
-- [ ] All user input validated at system boundaries
-- [ ] Authentication and authorization checked on every protected endpoint
-- [ ] Security headers present in response (check with browser DevTools)
-- [ ] Error responses don't expose internal details
-- [ ] Rate limiting active on auth endpoints
-- [ ] Server-side URL fetches validated against an allowlist (no SSRF)
-- [ ] LLM/model output validated and encoded before use (if AI features present)
+- [ ] 原生 audit 没有未缓解的可到达的 critical/high 发现；CI 保留权威 lockfile 并阻止未经评审的依赖脚本
+- [ ] 源代码或 git 历史中没有密钥
+- [ ] 所有用户输入都在系统边界验证
+- [ ] 每个受保护的端点都检查了认证和授权
+- [ ] 响应中存在安全响应头（用浏览器 DevTools 检查）
+- [ ] 错误响应不暴露内部细节
+- [ ] 认证端点启用了速率限制
+- [ ] 服务器端 URL 获取已对照白名单验证（无 SSRF）
+- [ ] LLM/模型输出在使用前已验证和编码（如果存在 AI 功能）

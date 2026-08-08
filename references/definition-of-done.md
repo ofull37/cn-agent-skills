@@ -1,67 +1,67 @@
-# Definition of Done
+# 完成定义（Definition of Done）
 
-A standing, project-wide bar that every change must clear before it counts as done. Unlike acceptance criteria, which vary per task and answer "did we build the right thing?", the Definition of Done is the same every time and answers "is this finished to our standard?". Use it as the final gate in `planning-and-task-breakdown`, `incremental-implementation`, and `shipping-and-launch`.
+一项贯穿整个项目的常设标准，任何变更在算作「完成」之前都必须达到。与验收标准（每个任务各不相同，回答「我们是否构建了正确的东西？」）不同，完成定义每次都是相同的，回答「这项工作是否达到了我们的标准？」。在 `planning-and-task-breakdown`、`incremental-implementation` 和 `shipping-and-launch` 中将它作为最后的关卡。
 
-## Definition of Done vs. Acceptance Criteria
+## 完成定义 vs. 验收标准
 
-| | Acceptance Criteria | Definition of Done |
+| | 验收标准 | 完成定义 |
 |---|---|---|
-| Scope | Specific to one task or spec | Applies to every increment |
-| Changes | Different for each item | Fixed and reused |
-| Answers | "Did we build *this thing*?" | "Is it *ready*?" |
-| Owner | Defined when planning the task | Defined once for the project |
-| Example | "User can reset password via email link" | "Tests pass, no regressions, docs updated" |
+| 适用范围 | 针对单个任务或 spec | 适用于每一个增量 |
+| 变更 | 每一项各不相同 | 固定且复用 |
+| 回答的问题 | 「我们是否构建了*这个东西*？」 | 「它是否*就绪*？」 |
+| 归属 | 规划任务时定义 | 为项目定义一次 |
+| 示例 | 「用户可以通过邮件链接重置密码」 | 「测试通过、无回归、文档已更新」 |
 
-The two are complementary. A task is done only when **its** acceptance criteria are met **and** the standing Definition of Done is satisfied. Skipping either leaves work that looks finished but is not.
+两者是互补的。只有当**该任务自己的**验收标准被满足**且**常设的完成定义被满足时，任务才算完成。跳过任何一方都会留下看似完成实则未完成的工作。
 
-## The Standing Checklist
+## 常设检查清单
 
-Apply this to every change before declaring it done.
+在宣布任何变更完成之前，对其应用以下清单。
 
-### Correctness
-- [ ] All acceptance criteria for the task are met
-- [ ] Code runs and behaves as intended, verified at runtime, not just compiled or typechecked
-- [ ] New behavior is covered by tests that fail without the change and pass with it
-- [ ] Existing tests still pass; no regressions introduced
-- [ ] Edge cases and error paths are handled, not just the happy path
+### 正确性
+- [ ] 任务的所有验收标准均已满足
+- [ ] 代码运行且行为符合预期，并在运行时验证过，而不仅仅是编译或类型检查通过
+- [ ] 新行为由测试覆盖，这些测试在没有该变更时失败、有该变更时通过
+- [ ] 现有测试仍然通过；未引入回归
+- [ ] 边界情况和错误路径得到处理，而不仅仅是正常路径
 
-### Quality
-- [ ] Code reveals intent through naming and structure; no comments needed to explain *what* it does
-- [ ] No duplicated business logic
-- [ ] No dead code, debug output, or commented-out blocks left behind
-- [ ] Changes are scoped to the task; no unrelated refactors snuck in
-- [ ] Linting and formatting pass
+### 质量
+- [ ] 代码通过命名和结构揭示意图；无需注释来解释它是*做什么的*
+- [ ] 没有重复的业务逻辑
+- [ ] 没有遗留的死代码、调试输出或注释掉的代码块
+- [ ] 变更范围限定在任务内；没有混入无关的重构
+- [ ] Lint 和格式化通过
 
-The depth behind these items lives in `code-review-and-quality` (the five-axis review) and `code-simplification` (reducing complexity without changing behavior).
+这些条目背后的深度内容见 `code-review-and-quality`（五轴评审）和 `code-simplification`（在不改变行为的前提下降低复杂度）。
 
-### Integration
-- [ ] Change works with the rest of the system, not just in isolation
-- [ ] Database migrations, config changes, and feature flags are accounted for
-- [ ] Backward compatibility considered for any public interface or API change
+### 集成
+- [ ] 变更能与系统的其他部分协同工作，而不仅仅是在隔离环境中工作
+- [ ] 数据库迁移、配置变更和功能开关都已考虑周全
+- [ ] 任何公开接口或 API 变更都考虑了向后兼容性
 
-### Documentation
-- [ ] Public interfaces, APIs, and user-facing behavior are documented
-- [ ] Architectural decisions worth preserving are recorded (see `documentation-and-adrs`)
-- [ ] Documentation describes the current state in timeless language, not the change history
+### 文档
+- [ ] 公开接口、API 和面向用户的行为都有文档
+- [ ] 值得保留的架构决策已记录（参见 `documentation-and-adrs`）
+- [ ] 文档用不受时间影响的语言描述当前状态，而不是变更历史
 
-### Ship-readiness
-- [ ] Security implications reviewed for any untrusted input, auth, or data handling (see `security-and-hardening`)
-- [ ] Observability in place for new critical paths (logs, metrics, traces) (see `observability-and-instrumentation`)
-- [ ] Rollback path exists for anything risky (see `shipping-and-launch`)
-- [ ] The human has reviewed and approved before merge or deploy
+### 发布就绪
+- [ ] 任何不受信任的输入、认证或数据处理都经过了安全影响评审（参见 `security-and-hardening`）
+- [ ] 新的关键路径已具备可观测性（日志、指标、追踪）（参见 `observability-and-instrumentation`）
+- [ ] 任何有风险的内容都存在回滚路径（参见 `shipping-and-launch`）
+- [ ] 在合并或部署之前，人类已评审并批准
 
-## How to Apply
+## 如何应用
 
-- **Per task**: confirm the Correctness and Quality sections before checking the task off.
-- **Per feature**: confirm Integration and Documentation before considering the feature complete.
-- **Per release**: the full checklist is the floor; `shipping-and-launch` adds the deploy-specific gates on top.
+- **每个任务**：在勾掉该任务之前，先确认「正确性」和「质量」两部分。
+- **每个功能**：在将功能视为完成之前，确认「集成」和「文档」。
+- **每次发布**：完整清单是下限；`shipping-and-launch` 在其之上追加部署专属的关卡。
 
-Tailor the list to the project once, then reuse it unchanged. A Definition of Done that is renegotiated every sprint is not a Definition of Done.
+先为项目量身定制一次清单，然后不加改动地复用。每次迭代都要重新协商的完成定义，就不是完成定义。
 
-## Red Flags
+## 危险信号
 
-- "It's done, I just haven't run it yet": unverified work is not done.
-- "Tests pass" used as a synonym for done while docs, regressions, or runtime verification are skipped.
-- A different bar applied depending on deadline pressure.
-- Acceptance criteria treated as the whole bar, with no standing quality floor.
-- "Done" declared before human review on changes that need it.
+- 「已经完成了，我只是还没运行过」：未经验证的工作不算完成。
+- 把「测试通过」当作完成的同义词，却跳过文档、回归或运行时验证。
+- 根据交付期限的压力采用不同的标准。
+- 把验收标准当作全部标准，没有常设的质量底线。
+- 在需要人类评审的变更上，未经评审就宣布「完成」。

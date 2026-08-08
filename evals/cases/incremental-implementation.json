@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Implement the next task from the plan as a small verifiable slice",
+        "prompt": "从计划中实现下一个任务，作为一个小的、可验证的切片",
         "top_k": 3
       },
       {
-        "prompt": "Build this feature step by step, committing after each working increment",
+        "prompt": "一步步构建这个功能，在每个可运行的增量之后提交",
         "top_k": 3
       },
       {
-        "prompt": "Ship this change behind a feature flag in thin slices",
+        "prompt": "以细切片的方式在功能开关后面发布这个改动",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "What alerts should we page on for the new service?",
+        "prompt": "我们应该为新服务配置哪些告警来呼叫人？",
         "owner": "observability-and-instrumentation"
       },
       {
-        "prompt": "Interview me to figure out the real requirements",
+        "prompt": "采访我以弄清楚真正的需求",
         "owner": "interview-me"
       }
     ]
@@ -29,28 +29,28 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Implement CSV export for the reports page, working from the existing task plan.",
-      "expected_output": "The feature delivered in small verified increments with a commit per slice",
+      "prompt": "根据现有的任务计划，为报表页面实现 CSV 导出。",
+      "expected_output": "功能以小步验证的增量交付，每个切片都有对应的提交",
       "files": [
         "incremental-implementation"
       ],
       "expectations": [
-        "Work proceeds in thin vertical slices rather than one large change",
-        "Each slice is verified (tests or build) before the next begins",
-        "Each slice is committed separately"
+        "工作应以细的垂直切片推进，而不是一次性大改动",
+        "在开始下一个切片之前，每个切片都要被验证（测试或构建）",
+        "每个切片应单独提交"
       ]
     },
     {
       "id": 2,
-      "prompt": "A two-day CSV export draft mixes every layer and has no tests, but management says splitting it would waste the sunk effort. Decide how to proceed.",
-      "expected_output": "The draft is converted into small independently verified slices without accepting sunk cost as a reason to batch",
+      "prompt": "一份两天的 CSV 导出草稿把所有层次混在一起且没有测试，但管理层说拆分会浪费已经投入的努力。请决定如何推进。",
+      "expected_output": "草稿应被拆分为小的、可独立验证的切片，而不以沉没成本为由整体合并提交",
       "files": [
         "incremental-implementation-pressure"
       ],
       "expectations": [
-        "Sunk cost is not accepted as a reason to commit the unverified batch",
-        "The work is decomposed into independently useful vertical slices",
-        "Verification is required before each slice is committed"
+        "沉没成本不能成为提交未经验证的整体改动的理由",
+        "工作应被分解为彼此独立、各自有用的垂直切片",
+        "每个切片在提交前都必须通过验证"
       ]
     }
   ]

@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "I have a rough idea for a habit tracker, help me refine it",
+        "prompt": "我有一个关于习惯追踪器的粗略想法，帮我打磨它",
         "top_k": 3
       },
       {
-        "prompt": "Stress-test my plan for the new onboarding flow",
+        "prompt": "对新用户引导流程的计划做压力测试",
         "top_k": 3
       },
       {
-        "prompt": "Ideate on ways to improve developer retention in the product",
+        "prompt": "发散思考如何提高产品中开发者的留存率",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Fix the failing CI pipeline",
+        "prompt": "修复失败的 CI 流水线",
         "owner": "ci-cd-and-automation"
       },
       {
-        "prompt": "Audit the upload endpoint for vulnerabilities",
+        "prompt": "审计上传端点是否存在漏洞",
         "owner": "security-and-hardening"
       }
     ]
@@ -30,13 +30,13 @@
     {
       "id": 1,
       "kind": "dialogue",
-      "prompt": "Refine this vague idea: 'some kind of tool that helps teams share knowledge better'.",
-      "expected_output": "Sharpening questions, distinct directions, surfaced assumptions, and a one-pager with MVP scope and a Not Doing list",
+      "prompt": "打磨这个模糊的想法：「某种帮助团队更好地分享知识的工具」。",
+      "expected_output": "澄清式提问、不同的方向、浮出水面的假设，以及一份包含 MVP 范围和「不做清单」的一页方案",
       "expectations": [
-        "Sharpening questions are asked before converging",
-        "Hidden assumptions are surfaced explicitly",
-        "The output includes an explicit Not Doing list",
-        "The agent pushes back on weak aspects instead of only agreeing"
+        "在收敛之前应先提出澄清式提问",
+        "隐藏的假设应被显式地摆到台面上",
+        "输出中应包含明确的「不做清单」",
+        "agent 应对薄弱之处提出异议，而不是一味附和"
       ]
     }
   ]

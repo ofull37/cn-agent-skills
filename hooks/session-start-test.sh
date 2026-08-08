@@ -1,5 +1,5 @@
 #!/bin/bash
-# session-start-test.sh - Tests for the SessionStart hook JSON payload
+# session-start-test.sh - SessionStart hook JSON 负载的测试
 
 set -euo pipefail
 

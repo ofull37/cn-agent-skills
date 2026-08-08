@@ -1,15 +1,15 @@
 #!/bin/bash
-# simplify-ignore.sh — Hook for Read (PreToolUse), Edit|Write (PostToolUse), Stop
+# simplify-ignore.sh — Read（PreToolUse）、Edit|Write（PostToolUse）、Stop 的 Hook
 #
-# PreToolUse Read   → backs up file, replaces blocks with BLOCK_<hash> in-place
-# PostToolUse Edit  → expands placeholders, re-filters so file stays hidden
-# PostToolUse Write → expands placeholders, re-filters so file stays hidden
-# Stop              → restores real file content from backup
+# PreToolUse Read   → 备份文件，就地（in-place）将块替换为 BLOCK_<hash>
+# PostToolUse Edit  → 展开占位符，重新过滤，使文件保持隐藏
+# PostToolUse Write → 展开占位符，重新过滤，使文件保持隐藏
+# Stop              → 从备份恢复真实文件内容
 #
-# The file on disk ALWAYS has placeholders while the session is active.
-# The real content (with model's changes applied) lives in the backup.
+# 会话激活期间，磁盘上的文件始终带有占位符。
+# 真实内容（已应用模型的改动）存放在备份中。
 #
-# Dependencies: jq, shasum or sha1sum (auto-detected)
+# 依赖：jq、shasum 或 sha1sum（自动检测）
 
 set -euo pipefail
 
@@ -20,8 +20,8 @@ fi
 CACHE="${CLAUDE_PROJECT_DIR:-.}/.claude/.simplify-ignore-cache"
 if [ -t 0 ]; then INPUT="{}"; else INPUT=$(cat); fi
 
-# Parse hook input — trap errors explicitly so set -e doesn't cause
-# a silent exit on malformed JSON, and surface a useful diagnostic.
+# 解析 hook 输入——显式捕获错误，以免 set -e 在畸形 JSON 上
+# 静默退出，并浮出一条有用的诊断信息。
 parse_error=""
 TOOL_NAME=$(printf '%s' "$INPUT" | jq -r '.tool_name // empty' 2>/dev/null) || {
   parse_error="failed to parse .tool_name from hook input"
@@ -42,8 +42,8 @@ hash_cmd() {
 }
 file_id() { printf '%s' "$1" | hash_cmd | cut -c1-16; }
 block_hash() { printf '%s' "$1" | hash_cmd | cut -c1-8; }
-# Escape glob metacharacters so ${var/pattern/repl} treats pattern as literal.
-# Needed for Bash 3.2 (macOS) where quotes don't suppress globbing in PE patterns.
+# 转义 glob 元字符，使 ${var/pattern/repl} 将 pattern 视为字面量。
+# 对 Bash 3.2（macOS）必需，因为在那里引号不能抑制 PE 模式中的 glob。
 escape_glob() {
   local s="$1"
   s="${s//\\/\\\\}"
@@ -53,9 +53,9 @@ escape_glob() {
   printf '%s' "$s"
 }
 
-# ── filter_file: replace simplify-ignore blocks with BLOCK_<hash> placeholders ─
-# Reads $1 (source), writes filtered version to $2 (dest), saves blocks to cache.
-# Returns 0 if blocks were found, 1 if none.
+# ── filter_file：将 simplify-ignore 块替换为 BLOCK_<hash> 占位符 ─
+# 读取 $1（源），将过滤后的版本写入 $2（目标），将块保存到缓存。
+# 找到块时返回 0，没有时返回 1。
 filter_file() {
   local src="$1" dest="$2" fid="$3"
   : > "$dest"
@@ -64,22 +64,22 @@ filter_file() {
   local count=0 in_block=0 buf="" reason="" prefix="" suffix=""
 
   while IFS= read -r line || [ -n "$line" ]; do
-    # Check for start marker (no fork — uses bash case)
+    # 检查开始标记（不 fork——使用 bash case）
     if [ $in_block -eq 0 ]; then
       case "$line" in *simplify-ignore-start*)
         in_block=1
         buf="$line"
-        # Extract comment prefix/suffix to preserve language-appropriate syntax
+        # 提取注释前缀/后缀，以保留符合语言习惯的语法
         prefix="${line%%simplify-ignore-start*}"
         suffix=""
         case "$line" in *'*/'*) suffix=" */" ;; *'-->'*) suffix=" -->" ;; esac
         reason=$(printf '%s' "$line" | sed -n 's/.*simplify-ignore-start:[[:space:]]*//p' \
           | sed 's/[[:space:]]*\*\/.*$//' | sed 's/[[:space:]]*-->.*$//' | sed 's/[[:space:]]*$//')
-        # Handle single-line block (start + end on same line)
+        # 处理单行块（开始 + 结束在同一行）
         case "$line" in *simplify-ignore-end*)
           in_block=0
-          # Write single-line block immediately and skip to next line
-          # to avoid the end-marker check below firing again
+          # 立即写入单行块并跳到下一行，
+          # 以免下面的结束标记检查再次触发
           local h; h=$(block_hash "$buf")
           count=$((count + 1))
           printf '%s' "$buf" > "$CACHE/${fid}.block.${h}"
@@ -99,12 +99,12 @@ filter_file() {
         esac
       ;; esac
     fi
-    # Accumulate block content
+    # 累积块内容
     if [ $in_block -eq 1 ]; then
       buf="${buf}
 ${line}"
     fi
-    # Check for end marker
+    # 检查结束标记
     case "$line" in *simplify-ignore-end*)
       if [ $in_block -eq 1 ]; then
         local h; h=$(block_hash "$buf")
@@ -126,13 +126,13 @@ ${line}"
     [ $in_block -eq 0 ] && printf '%s\n' "$line" >> "$dest"
   done < "$src"
 
-  # Unclosed block → flush as-is
+  # 未闭合的块 → 原样写出
   if [ $in_block -eq 1 ] && [ -n "$buf" ]; then
     printf 'Warning: unclosed simplify-ignore-start in %s (block not hidden)\n' "$src" >&2
     printf '%s\n' "$buf" >> "$dest"
   fi
 
-  # Preserve trailing newline status of source
+  # 保留源文件的结尾换行状态
   if [ -s "$dest" ] && [ -s "$src" ] && [ -n "$(tail -c 1 "$src")" ]; then
     perl -pe 'chomp if eof' "$dest" > "${dest}.nnl" && \
       cat "${dest}.nnl" > "$dest" && rm -f "${dest}.nnl"
@@ -141,7 +141,7 @@ ${line}"
   [ $count -gt 0 ] && return 0 || return 1
 }
 
-# ── Stop: restore all files from backup ───────────────────────────────────────
+# ── Stop：从备份恢复所有文件 ───────────────────────────────────────
 if [ -z "$TOOL_NAME" ]; then
   [ -d "$CACHE" ] || exit 0
   for bak in "$CACHE"/*.bak; do
@@ -155,7 +155,7 @@ if [ -z "$TOOL_NAME" ]; then
       rm -f "$bak" "$pathfile" "$CACHE/${fid}".block.* "$CACHE/${fid}".reason.* "$CACHE/${fid}".prefix.* "$CACHE/${fid}".suffix.*
       rmdir "$CACHE/${fid}.lock" 2>/dev/null
     else
-      # File was moved/deleted — save backup as .recovered, don't destroy it
+      # 文件被移动/删除——将备份保存为 .recovered，不要销毁它
       mkdir -p "$(dirname "${orig}.recovered")"
       mv "$bak" "${orig}.recovered"
       rm -f "$pathfile" "$CACHE/${fid}".block.* "$CACHE/${fid}".reason.* "$CACHE/${fid}".prefix.* "$CACHE/${fid}".suffix.*
@@ -163,7 +163,7 @@ if [ -z "$TOOL_NAME" ]; then
       printf 'Warning: %s was moved/deleted. Recovered original to %s.recovered\n' "$orig" "$orig" >&2
     fi
   done
-  # Clean orphan locks (created but crash before backup)
+  # 清理孤立锁（已创建但在备份前崩溃）
   for lockdir in "$CACHE"/*.lock; do
     [ -d "$lockdir" ] || continue
     rmdir "$lockdir" 2>/dev/null
@@ -173,7 +173,7 @@ fi
 
 [ -z "$FILE_PATH" ] && exit 0
 
-# ── PreToolUse Read: filter in-place ──────────────────────────────────────────
+# ── PreToolUse Read：就地过滤 ──────────────────────────────────────────
 if [ "$TOOL_NAME" = "Read" ]; then
   [ -f "$FILE_PATH" ] || exit 0
   case "$(basename "$FILE_PATH")" in simplify-ignore*|SIMPLIFY-IGNORE*) exit 0 ;; esac
@@ -181,14 +181,14 @@ if [ "$TOOL_NAME" = "Read" ]; then
   mkdir -p "$CACHE"
   ID=$(file_id "$FILE_PATH")
 
-  # If backup exists, file is already filtered — skip
+  # 如果备份已存在，说明文件已被过滤——跳过
   [ -f "$CACHE/${ID}.bak" ] && exit 0
 
   grep -q 'simplify-ignore-start' -- "$FILE_PATH" || exit 0
 
-  # Atomic lock: mkdir fails if another session races us
+  # 原子锁：如果另一个会话与我们竞争，mkdir 会失败
   if ! mkdir "$CACHE/${ID}.lock" 2>/dev/null; then
-    # Lock exists — reclaim only if stale (>60s old, no backup = crash leftover)
+    # 锁已存在——仅在过期时回收（>60 秒，无备份 = 崩溃遗留）
     if [ ! -f "$CACHE/${ID}.bak" ] && \
        [ -n "$(find "$CACHE/${ID}.lock" -maxdepth 0 -mmin +1 2>/dev/null)" ]; then
       rmdir "$CACHE/${ID}.lock" 2>/dev/null || true
@@ -198,11 +198,11 @@ if [ "$TOOL_NAME" = "Read" ]; then
     fi
   fi
 
-  # Back up the original (preserve trailing newline status)
+  # 备份原始文件（保留结尾换行状态）
   cp -p "$FILE_PATH" "$CACHE/${ID}.bak" 2>/dev/null || cp "$FILE_PATH" "$CACHE/${ID}.bak"
   printf '%s' "$FILE_PATH" > "$CACHE/${ID}.path"
 
-  # Filter in-place (cat > preserves inode and permissions)
+  # 就地过滤（cat > 保留 inode 和权限）
   FILTERED="$CACHE/${ID}.$$.tmp"
   rm -f "$FILTERED"
   if filter_file "$FILE_PATH" "$FILTERED" "$ID"; then
@@ -215,23 +215,23 @@ if [ "$TOOL_NAME" = "Read" ]; then
   exit 0
 fi
 
-# ── PostToolUse Edit|Write: expand, then re-filter ────────────────────────────
+# ── PostToolUse Edit|Write：展开，然后重新过滤 ────────────────────────────
 if [ "$TOOL_NAME" = "Edit" ] || [ "$TOOL_NAME" = "Write" ]; then
   ID=$(file_id "$FILE_PATH")
   [ -f "$CACHE/${ID}.bak" ] || exit 0
   ls "$CACHE/${ID}".block.* >/dev/null 2>&1 || exit 0
 
-  # Expand placeholders, preserving any inline code the model added around them
+  # 展开占位符，保留模型在它们周围添加的任何内联代码
   EXPANDED="$CACHE/${ID}.$$.expanded"
   rm -f "$EXPANDED"
   while IFS= read -r line || [ -n "$line" ]; do
     case "$line" in *BLOCK_*)
-      # Expand all placeholders on this line (supports multiple per line)
+      # 展开这一行上的所有占位符（支持每行多个）
       for bf in "$CACHE/${ID}".block.*; do
         [ -f "$bf" ] || continue
         h="${bf##*.}"
         case "$line" in *"BLOCK_${h}"*)
-          # Reconstruct the exact placeholder pattern
+          # 重建确切的占位符模式
           bp=""; bs=""; br=""
           [ -f "$CACHE/${ID}.prefix.${h}" ] && bp=$(cat "$CACHE/${ID}.prefix.${h}")
           [ -f "$CACHE/${ID}.suffix.${h}" ] && bs=$(cat "$CACHE/${ID}.suffix.${h}")
@@ -242,18 +242,18 @@ if [ "$TOOL_NAME" = "Edit" ] || [ "$TOOL_NAME" = "Write" ]; then
             placeholder="${bp}BLOCK_${h}${bs}"
           fi
           block_content=$(cat "$bf"; printf x); block_content="${block_content%x}"
-          # Escape glob metacharacters (* ? [ \) in the pattern
+          # 转义模式中的 glob 元字符（* ? [ \）
           esc_placeholder=$(escape_glob "$placeholder")
-          # Bash native substitution (// = global replace): replace placeholder, keep surrounding code
+          # Bash 原生替换（// = 全局替换）：替换占位符，保留周围代码
           line="${line//$esc_placeholder/$block_content}"
-          # Fallback: if model altered the reason text, try without reason
-          # (only trigger if BLOCK_hash is still present AND wasn't in the original block content)
+          # 回退：如果模型改了原因文本，尝试去掉原因
+          # （仅当 BLOCK_hash 仍然存在且不在原始块内容中时才触发）
           case "$block_content" in *"BLOCK_${h}"*) ;; *)
             case "$line" in *"BLOCK_${h}"*)
               printf 'Warning: placeholder BLOCK_%s was modified by model, using fuzzy match\n' "$h" >&2
               esc_fuzzy=$(escape_glob "${bp}BLOCK_${h}${bs}")
               line="${line//$esc_fuzzy/$block_content}"
-              # Last resort: match just the hash token
+              # 最后手段：只匹配哈希令牌
               case "$line" in *"BLOCK_${h}"*)
                 line="${line//BLOCK_${h}/$block_content}"
               ;; esac
@@ -264,33 +264,33 @@ if [ "$TOOL_NAME" = "Edit" ] || [ "$TOOL_NAME" = "Write" ]; then
     ;; esac
     printf '%s\n' "$line" >> "$EXPANDED"
   done < "$FILE_PATH"
-  # Preserve trailing newline status
+  # 保留结尾换行状态
   if [ -s "$EXPANDED" ] && [ -s "$FILE_PATH" ] && [ -n "$(tail -c 1 "$FILE_PATH")" ]; then
     perl -pe 'chomp if eof' "$EXPANDED" > "${EXPANDED}.nnl" && \
       cat "${EXPANDED}.nnl" > "$EXPANDED" && rm -f "${EXPANDED}.nnl"
   fi
-  # Warn if model deleted a protected block entirely
+  # 如果模型完全删除了一个受保护块，发出警告
   for bf in "$CACHE/${ID}".block.*; do
     [ -f "$bf" ] || continue
     bh="${bf##*.}"
-    # After expansion, blocks appear as original code (simplify-ignore-start).
-    # If neither the expanded code nor the placeholder is in EXPANDED, it was deleted.
+    # 展开后，块会以原始代码的形式出现（simplify-ignore-start）。
+    # 如果展开后的代码和占位符都不在 EXPANDED 中，说明它被删除了。
     if ! grep -qF "BLOCK_${bh}" "$EXPANDED" 2>/dev/null; then
-      # Get first line of block to check if it was expanded back
+      # 取块的第一行，检查它是否被展开回去
       first_line=$(head -1 "$bf")
       if ! grep -qF "$first_line" "$EXPANDED" 2>/dev/null; then
         printf 'Warning: protected block BLOCK_%s was deleted by model\n' "$bh" >&2
       fi
     fi
   done
-  # Preserve inode and permissions
+  # 保留 inode 和权限
   cat "$EXPANDED" > "$FILE_PATH"
   rm -f "$EXPANDED"
 
-  # Save expanded version as new backup (this is the "real" file with model's changes)
+  # 将展开后的版本保存为新备份（这是带模型改动的「真实」文件）
   cp "$FILE_PATH" "$CACHE/${ID}.bak"
 
-  # Re-filter in-place so the file on disk stays with placeholders
+  # 就地重新过滤，使磁盘上的文件保持带占位符
   FILTERED="$CACHE/${ID}.$$.tmp"
   rm -f "$FILTERED"
   if filter_file "$FILE_PATH" "$FILTERED" "$ID"; then

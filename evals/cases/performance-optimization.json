@@ -3,33 +3,33 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Optimize this N+1 query",
+        "prompt": "优化这个 N+1 查询",
         "top_k": 1
       },
       {
-        "prompt": "The dashboard takes eight seconds to load, profile it and fix the bottleneck",
+        "prompt": "仪表盘加载需要八秒，请对它做性能剖析并修复瓶颈",
         "top_k": 3
       },
       {
-        "prompt": "Profile these slow database queries and add the right indexes",
+        "prompt": "对这些缓慢的数据库查询做性能剖析并添加合适的索引",
         "top_k": 1
       },
       {
-        "prompt": "The orders endpoint has a slow N+1 query pattern, profile it and fix the bottleneck",
+        "prompt": "订单端点存在缓慢的 N+1 查询模式，请做性能剖析并修复瓶颈",
         "top_k": 3
       },
       {
-        "prompt": "Core Web Vitals are failing, improve our LCP",
+        "prompt": "Core Web Vitals 不达标，请改善我们的 LCP",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Draft the deprecation notice for the v1 API",
+        "prompt": "为 v1 API 起草弃用通知",
         "owner": "deprecation-and-migration"
       },
       {
-        "prompt": "Design the public interface for the billing module",
+        "prompt": "为计费模块设计公共接口",
         "owner": "api-and-interface-design"
       }
     ]
@@ -37,15 +37,15 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "The products page renders slowly with 1000 items. Improve its performance.",
-      "expected_output": "A measured baseline, an identified bottleneck, a targeted fix, and a verified improvement",
+      "prompt": "产品页面渲染 1000 个条目时很慢。请改善其性能。",
+      "expected_output": "一个实测基线、明确的瓶颈、有针对性的修复，以及经过验证的改善",
       "files": [
         "performance-optimization"
       ],
       "expectations": [
-        "Performance is measured before any optimization is applied",
-        "The fix targets the measured bottleneck rather than guessing",
-        "Improvement is verified against the baseline after the change"
+        "在应用任何优化之前先测量性能",
+        "修复应针对实测出的瓶颈，而不是猜测",
+        "改动后应相对基线验证改善效果"
       ]
     }
   ]

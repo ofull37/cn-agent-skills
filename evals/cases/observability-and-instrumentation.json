@@ -3,41 +3,41 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Add structured logging and metrics to the checkout service",
+        "prompt": "为结账服务添加结构化日志和指标",
         "top_k": 3
       },
       {
-        "prompt": "Set up tracing so we can follow a request across services",
+        "prompt": "搭建追踪，让我们能跨服务跟踪一个请求",
         "top_k": 3
       },
       {
-        "prompt": "What alerts should we page on for this new endpoint?",
+        "prompt": "我们应该为这个新端点配置哪些告警来呼叫人？",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Simplify this over-clever component",
+        "prompt": "简化这个过于炫技的组件",
         "owner": "code-simplification"
       },
       {
-        "prompt": "Draft the PRD for the referral program"
+        "prompt": "为推荐计划起草 PRD"
       }
     ]
   },
   "evals": [
     {
       "id": 1,
-      "prompt": "Instrument a new payment-retry feature so on-call can operate it.",
-      "expected_output": "On-call questions defined first, then structured logs, RED metrics, and symptom-based alerts that answer them",
+      "prompt": "为新的支付重试功能做埋点，让值班人员能够对其进行操作。",
+      "expected_output": "先定义值班问题，再以结构化日志、RED 指标和基于症状的告警来回答这些问题",
       "files": [
         "observability-and-instrumentation"
       ],
       "expectations": [
-        "On-call questions are written before instrumentation is added",
-        "Logs are structured events with a correlation id, not prose strings",
-        "Metrics avoid unbounded label cardinality",
-        "Alerts are symptom-based and actionable"
+        "在添加埋点之前，先写出值班问题",
+        "日志应是带关联 ID 的结构化事件，而不是散文式字符串",
+        "指标应避免无上限的标签基数",
+        "告警应基于症状且可操作"
       ]
     }
   ]

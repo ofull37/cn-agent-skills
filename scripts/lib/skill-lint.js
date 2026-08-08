@@ -33,21 +33,24 @@ const KEBAB_CASE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 // A description must state WHEN to use the skill, not just what it does
 // (docs/skill-anatomy.md → Required). Accept the canonical "Use when …"
-// plus the equivalent "Use before/after/during …" phrasings in use today.
-// Reject negated forms ("Do not use when …", "Don't use when …") — those
-// describe exclusions, not trigger conditions.
-const DESCRIPTION_TRIGGER        = /\buse (this )?when\b|\buse (before|after|during)\b/i;
-const DESCRIPTION_TRIGGER_NEGATE = /\b(do not|don't|never) use (this )?(when|before|after|during)\b/i;
+// plus the equivalent "Use before/after/during …" phrasings in use today,
+// and the Chinese equivalents used by the zh-CN localization
+// ("当…时使用", "适用于…", "用于…").
+// Reject negated forms ("Do not use when …", "Don't use when …",
+// "不要在…时使用") — those describe exclusions, not trigger conditions.
+const DESCRIPTION_TRIGGER = /\buse (this )?when\b|\buse (before|after|during)\b|当[^。\n]{0,120}?(?:时使用|时)|适用于|使用时机|用于|用来/iu;
+const DESCRIPTION_TRIGGER_NEGATE = /\b(do not|don't|never) use (this )?(when|before|after|during)\b|(?:不要|请勿|无须|无需|避免)[^。\n]{0,30}(?:使用|适用|用于|用来)/u;
 
 // Sections every standard SKILL.md must contain.
 // Each entry is an array of acceptable heading strings — the first
-// match wins, so you can list canonical + legacy aliases.
+// match wins, so you can list canonical + legacy aliases, plus the
+// Chinese headings used by the zh-CN localization.
 const REQUIRED_SECTIONS = [
-  ['## Overview'],
-  ['## When to Use'],
-  ['## Common Rationalizations'],
-  ['## Red Flags'],
-  ['## Verification'],
+  ['## Overview', '## 概述'],
+  ['## When to Use', '## 何时使用'],
+  ['## Common Rationalizations', '## 常见合理化借口'],
+  ['## Red Flags', '## 危险信号'],
+  ['## Verification', '## 验证'],
 ];
 
 // Skills that are intentionally exempt from section checks.
@@ -73,6 +76,12 @@ const SKILL_REF_PATTERNS = [
   /\bsee `([a-z][a-z0-9-]+[a-z0-9])`/g,
   /──→ ([a-z][a-z0-9-]+[a-z0-9])\b/g,          // ASCII diagram arrows
   /→ `([a-z][a-z0-9-]+[a-z0-9])`/g,
+  // Chinese equivalents (zh-CN localization). Note: no leading \b — CJK
+  // characters are not \w in JS regexes, so a word boundary before them
+  // would never match.
+  /(?:使用|遵循|调用|引用|参见|参考|继续(?:使用)?) `([a-z][a-z0-9-]+[a-z0-9])`/g,
+  /──→ `([a-z][a-z0-9-]+[a-z0-9])`/g,
+  /→ `([a-z][a-z0-9-]+[a-z0-9])`(?: 技能| 流程| 工作流)?/g,
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

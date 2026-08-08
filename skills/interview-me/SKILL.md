@@ -1,99 +1,99 @@
 ---
 name: interview-me
-description: Extracts what the user actually wants instead of what they think they should want. Achieves this through one-question-at-a-time interview until ~95% confidence about the underlying intent. Use when an ask is underspecified ("build me X" without "for whom" or "why now"), when the user explicitly invokes ("interview me", "grill me", "are we sure?", "stress-test my thinking"), or when you catch yourself silently filling in ambiguous requirements before any plan, spec, or code exists.
+description: 提取用户真正想要的东西，而不是他们认为自己应该想要的东西。通过一次一个问题的方式逐步访谈，直到对潜在意图达到约 95% 的置信度。当需求描述不明确时（"给我建一个 X"但缺少"给谁用"或"为什么现在"），当用户明确要求时（"interview me"、"grill me"、"are we sure?"、"stress-test my thinking"），或当你发现在任何计划、规格或代码存在之前就默默填补了含糊的需求时使用。
 ---
 
-# Interview Me
+# 访谈我
 
-## Overview
+## 概述
 
-What people ask for and what they actually want are different things. They ask for "a dashboard" because that's what one asks for, not because a dashboard solves their problem. They say "make it faster" without a number to hit.
+人们要求的和他们真正想要的是两回事。他们要求"一个仪表盘"，是因为人们都这么要求，而不是因为仪表盘能解决他们的问题。他们说"让它更快"，却没有任何数字目标。
 
-The cheapest moment to find this gap is before any plan, spec, or code exists. Once you've started building, switching costs are real, and the user will rationalize the wrong thing into a "good enough" thing. The misfit gets locked in.
+发现这个差距成本最低的时机，是在任何计划、规格或代码存在之前。一旦你开始构建，切换成本就是真实的，用户会把错误的东西合理化成一个"够好"的东西。错配就此锁定。
 
-This skill closes the gap before it costs anything. The other Define-phase skills assume you already know roughly what you want: `idea-refine` generates variations from an idea, `spec-driven-development` writes the requirements down, `doubt-driven-development` stress-tests a plan after you've drafted one. Interview-me is the part before all of those, where you ask one question at a time, with your best guess attached, until you can predict what the user is going to say before they say it.
+本技能在付出任何代价之前弥合这个差距。其他 Define 阶段的技能都假定你大致知道自己想要什么：`idea-refine` 从一个想法生成各种变体，`spec-driven-development` 把需求写下来，`doubt-driven-development` 在你起草好计划之后对其进行压力测试。interview-me 是所有这一切之前的那一步：一次问一个问题，附上你最好的猜测，直到你能在用户说出之前预测到他们将要说什么。
 
-## When to Use
+## 何时使用
 
-Apply this skill when:
+在以下情况应用本技能：
 
-- The ask is missing at least one of: **who** the user is, **why** they want it, what **success** looks like, what the binding **constraint** is
-- The request is conventional rather than specific ("build me X", "make it faster") and you can't unpack the convention without guessing
-- You're tempted to start with assumptions you haven't surfaced
-- The user hasn't said which value they're optimizing for when two reasonable ones are in tension (simplicity vs. flexibility, cost vs. speed)
-- The user explicitly invokes: "interview me", "grill me", "before we start, are we sure?", "stress-test my thinking"
+- 需求至少缺少以下一项：**用户**是谁、他们**为什么**要它、**成功**长什么样、起约束作用的**限制**是什么
+- 请求是惯例式的而非具体的（"给我建一个 X"、"让它更快"），而你无法在不猜测的情况下拆解这种惯例
+- 你想从尚未浮出水面的假设开始
+- 当两个合理的目标彼此冲突时，用户没有说明他们在优化哪个（简洁 vs. 灵活，成本 vs. 速度）
+- 用户明确要求："interview me"、"grill me"、"before we start, are we sure?"、"stress-test my thinking"
 
-**When NOT to use:**
+**何时不使用：**
 
-- The ask is unambiguous and self-contained ("rename this variable", "fix this typo")
-- The user has explicitly asked for speed over verification
-- Pure information requests ("how does X work?", "what does this code do?")
-- Mechanical operations (renames, formats, file moves)
-- You already have ≥95% confidence; re-read the stop condition below before assuming you don't
+- 需求明确且自包含（"重命名这个变量"、"修复这个错别字"）
+- 用户明确要求速度优先于验证
+- 纯粹的信息请求（"X 是怎么工作的？"、"这段代码是做什么的？"）
+- 机械性操作（重命名、格式化、移动文件）
+- 你已经至少有 95% 的置信度；在假定自己没有之前，重读下面的停止条件
 
-## Loading Constraints
+## 加载约束
 
-This skill needs a live, responsive user. **Do not invoke in non-interactive contexts** like CI pipelines, scheduled runs, `/loop`, or autonomous-loop. If you're in one of those and the ask is underspecified, flag that as a blocker for the user instead of guessing.
+本技能需要一个实时、响应的用户。**不要在非交互式环境中调用**，例如 CI 流水线、定时运行、`/loop` 或自主循环。如果你身处其中且需求不明确，就把它标记为阻塞项告知用户，而不是去猜。
 
-## The Process
+## 流程
 
-### Step 1: Hypothesize, with a confidence number
+### 步骤 1：提出假设，并附上置信度数值
 
-Before asking anything, write down your current best read of what the user wants in **one sentence**, plus an honest confidence number (0–100%):
+在问任何问题之前，用**一句话**写下你当前对用户想要什么的最佳解读，外加一个诚实的置信度数值（0–100%）：
 
 ```
 HYPOTHESIS: You want a way to answer "how are we doing?" in standup, and "dashboard" was the convention that came to mind.
 CONFIDENCE: ~30% — missing: who it's for, what "metrics" means in context, and what success looks like
 ```
 
-The number forces honesty. If you wrote down a high number but can't actually predict the user's reactions to the next three questions you'd ask, the number is wrong. Start at the confidence level you can defend.
+这个数值逼你诚实。如果你写下一个很高的数值，却无法真正预测用户对你接下来要问的三个问题的反应，那么这个数值就是错的。从你能站得住脚的置信度开始。
 
-When confidence is below ~70%, append a brief reason on the same line — what's still unresolved or missing. This tells the user exactly what the interview needs to surface, and prevents the number from being a vague signal.
+当置信度低于约 70% 时，在同一行末尾附上简短理由——还有什么未解决或缺失的。这告诉用户访谈到底需要揭示什么，并防止这个数值变成一个含糊的信号。
 
-### Step 2: Ask one question at a time, each with a guess attached
+### 步骤 2：一次一个问题，每个都附上猜测
 
-Format:
+格式：
 
 ```
 Q: <one focused question>
 GUESS: <your hypothesis for the answer, with the reasoning that produced it>
 ```
 
-Wait for the user to react before asking the next question.
+等用户反应后再问下一个问题。
 
-**Why one at a time, not a batch:**
+**为什么一次一个，而不是批量：**
 
-- The user can't react to your hypotheses if you bury them in a list
-- Batches encourage skim-reading and surface answers
-- The third question often depends on the answer to the first; asking them all at once locks in the wrong framing
-- The user's energy for thinking carefully is finite; spend it one question at a time
+- 如果你把假设埋在一长串列表里，用户就无法对其做出反应
+- 批量会鼓励略读和浅层回答
+- 第三个问题往往取决于第一个问题的答案；一次性全问就会锁定错误的框架
+- 用户认真思考的精力是有限的；把它花在一次一个问题上
 
-**Why attach a guess:**
+**为什么要附上猜测：**
 
-- The user reacts faster to a wrong guess than they generate an answer from scratch
-- It commits you to a hypothesis you can be visibly wrong about, which keeps you honest
-- It surfaces *your* assumptions, which is what the interview is meant to expose
+- 用户对一个错误猜测的反应，比从头生成一个答案更快
+- 它让你承诺一个可以被明显证伪的假设，从而保持你的诚实
+- 它暴露出*你的*假设，而这正是访谈想要揭示的东西
 
-The risk here is a polite user agreeing with your guess to be agreeable. Mitigate by being visibly willing to be wrong, and occasionally guess in a direction you expect the user to push back on.
+这里的风险是：一个礼貌的用户为了让气氛融洽而同意你的猜测。缓解办法是让自己明显地愿意被反驳，并且偶尔朝着你预期用户会反驳的方向去猜。
 
-### Step 3: Listen for "want vs. should want"
+### 步骤 3：倾听"想要的 vs. 应该想要的"
 
-The most dangerous answers are the ones where the user says what a thoughtful answer *sounds like* rather than what they actually want. Watch for:
+最危险的回答，是那些用户说出一个有思考力的回答*听起来该有的样子*、而不是他们真正想要什么的回答。留意：
 
-- Answers that pattern-match best-practice talk ("I want it to be scalable", "clean architecture") without specifics
-- Answers that defer to convention ("the way most apps do it", "the standard approach")
-- Phrases like "I should probably…", "I think I'm supposed to…", "good engineering practice says…"
-- Buzzwords as goals — when "modern", "scalable", "robust" are the answer instead of a specific outcome
+- 模式匹配最佳实践套话（"我想要它可扩展"、"干净的架构"）却没有具体细节的回答
+- 顺从惯例的回答（"大多数应用都这么做"、"标准做法"）
+- 诸如"I should probably…"、"I think I'm supposed to…"、"good engineering practice says…"之类的措辞
+- 把流行词当作目标——当"现代"、"可扩展"、"健壮"成为答案，而不是一个具体结果时
 
-When you hear these, the question to ask is:
+当你听到这些时，该问的问题是：
 
-> *"If you didn't have to justify this to anyone, what would you actually want?"*
+> *"如果你不必向任何人证明这件事，你实际上想要的是什么？"*
 
-That single question often does more work than the previous five.
+这一个问题往往比前面五个问题加起来都更有用。
 
-### Step 4: Restate intent in the user's own words
+### 步骤 4：用用户自己的话重述意图
 
-When your confidence is high, write back what you now think the user wants. Keep it tight (5–8 lines), use their language where possible, and structure it so the user can confirm or correct line by line:
+当你的置信度很高时，把你现在认为用户想要的东西写回去。保持简洁（5–8 行），尽可能使用他们的语言，并把结构组织得让用户可以逐行确认或纠正：
 
 ```
 Here's what I now think you want:
@@ -108,49 +108,49 @@ Here's what I now think you want:
 Yes / no / refine?
 ```
 
-Including "Out of scope" is non-negotiable. Half of misalignment is silent disagreement about what is *not* being built.
+包含"Out of scope"（范围之外）是没得商量的。一半的错配，是双方对*不*构建什么存在心照不宣的分歧。
 
-### Step 5: Confirm — explicit yes, not "whatever you think"
+### 步骤 5：确认——明确的"是"，而不是"随你便"
 
-The gate is an explicit "yes." The following are **not** yes:
+闸门是一个明确的"是"。以下情况**不算**是"是"：
 
-- "Whatever you think is best." → The user is delegating, which means they don't have 95% confidence either. Re-ask with two concrete options framed as a choice.
-- "Sounds good." → Ambiguous. Ask: "Anything you'd refine?" Silence isn't confirmation.
-- "Sure, let's go." → Often a polite exit, not an endorsement. Same follow-up.
-- Silence followed by "okay let's start." → The user has given up on the interview, not converged. Stop and ask whether you've missed something.
+- "Whatever you think is best."（随你觉得最好）→ 用户在授权给你，这意味着他们也没有 95% 的置信度。给出两个具体选项，重新以选择的形式再问一次。
+- "Sounds good."（听起来不错）→ 含糊。追问："有什么你想改的吗？"沉默不是确认。
+- "Sure, let's go."（行，走吧）→ 往往是礼貌地脱身，而不是认可。同样的追问。
+- 沉默之后是"okay let's start."（好，我们开始吧）→ 用户已经放弃了访谈，而不是达成了共识。停下来，问是否漏掉了什么。
 
-If they correct you, fold the correction in and restate. Loop until you get an explicit yes.
+如果他们纠正你，把纠正折进来再重述。循环直到获得一个明确的"是"。
 
-### The 95% Confidence Stop
+### 95% 置信度停止点
 
-You're done when you can answer yes to this:
+当你对这个问题的回答为"是"时，你就完成了：
 
-> *Can I predict the user's reaction to the next three questions I would ask?*
+> *我能预测用户对我接下来要问的三个问题的反应吗？*
 
-If yes, you have shared understanding. Stop interviewing and produce the restate. If no, you're not done; ask the next question.
+如果能，你们就达成了共同理解。停止访谈，产出重述。如果不能，你还没完成；继续问下一个问题。
 
-This is a checkable test, not a vibe. It also has a floor: if you've gone several rounds and still can't predict, that's information about the ask, not a reason to keep grinding. Stop and tell the user: "I've asked X questions and I still can't predict your reactions. Something foundational is missing. Want to step back?"
+这是一个可检验的测试，而不是一种感觉。它也有一个下限：如果已经问了好几轮还是无法预测，那说明的是这个需求本身，而不是继续硬磨的理由。停下来告诉用户："我已经问了 X 个问题，还是无法预测你的反应。有一些基础性的东西缺失。想退一步吗？"
 
-## Output
+## 输出
 
-The output of this skill is a **confirmed statement of intent**: the restate from Step 4, with an explicit yes from Step 5. That's the deliverable. Specs, plans, and task lists are downstream; they consume the intent this skill produces.
+本技能的产出是一份**确认过的意图陈述**：来自步骤 4 的重述，加上来自步骤 5 的明确"是"。这就是交付物。规格、计划和任务清单都是下游产物；它们消费本技能产出的意图。
 
-If the user wants the intent to persist (a multi-session project, a handoff to another collaborator), offer to save it to `docs/intent/[topic].md`. Only save if they confirm.
+如果用户希望意图能够持久保存（一个跨会话的项目、移交给另一位协作者），主动提议保存到 `docs/intent/[topic].md`。只有他们确认后才保存。
 
-## Example
+## 示例
 
-A short before-and-after.
+一个简短的前后对比。
 
-**Without `interview-me`:**
+**没有 `interview-me`：**
 
 ```
 User:  build me a dashboard for our metrics
 Agent: <starts proposing chart libraries and layouts>
 ```
 
-The agent has assumed: who it's for, what metrics, what "for our team" means, what success looks like. None of these are stated. Every assumption is a place the user can later say "that's not what I meant."
+Agent 已经假设了：给谁用、什么指标、"for our team"是什么意思、成功长什么样。这些全都没有被说出来。每一个假设都是用户日后可以说"这不是我的意思"的地方。
 
-**With `interview-me`:**
+**使用 `interview-me`：**
 
 ```
 User: build me a dashboard for our metrics
@@ -175,51 +175,51 @@ User: First one actually. I literally don't have a list. They're spread across d
 Agent: <continues>
 ```
 
-Two questions in, the agent has discovered the actual ask isn't "a dashboard." It's "a list." Different artifact, different scope, different work. The dashboard would have been wrong.
+问了两三个问题，agent 就发现真正的需求不是"一个仪表盘"，而是"一个列表"。不同的产物、不同的范围、不同的工作量。那个仪表盘本来会是错的。
 
-## Interaction with Other Skills
+## 与其他技能的交互
 
-- **`idea-refine`**: downstream. If the confirmed intent is "I want X but I don't know how to scope it," hand off to `idea-refine` to generate variations against the now-explicit intent.
-- **`spec-driven-development`**: downstream. If the confirmed intent is concrete ("I want X for Y users with Z success criteria"), hand off to `spec-driven-development` to write it down.
-- **`planning-and-task-breakdown`**: two hops downstream of this skill (after the spec).
-- **`doubt-driven-development`**: opposite end of the timeline. Interview-me is pre-decision intent extraction; doubt-driven is post-decision artifact review. Both catch divergence, but at different moments.
-- **`source-driven-development`**: orthogonal. Interview-me clarifies what the user wants; SDD verifies framework facts. They don't compete.
+- **`idea-refine`**：下游。如果确认后的意图是"我想要 X，但我不知道如何划定范围"，就移交给 `idea-refine`，让它针对现在明确的意图生成各种变体。
+- **`spec-driven-development`**：下游。如果确认后的意图是具体的（"我想要面向 Y 用户、带 Z 成功标准的 X"），就移交给 `spec-driven-development` 把它写下来。
+- **`planning-and-task-breakdown`**：在本技能下游两步（在 spec 之后）。
+- **`doubt-driven-development`**：时间线的另一端。interview-me 是决策前的意图提取；doubt-driven 是决策后的产物审查。两者都捕捉分歧，但发生在不同的时机。
+- **`source-driven-development`**：正交。interview-me 澄清用户想要什么；SDD 验证框架事实。它们并不竞争。
 
-## Common Rationalizations
+## 常见合理化借口
 
-| Rationalization | Reality |
+| 合理化借口 | 现实 |
 |---|---|
-| "The ask is clear enough" | If you can't write the user's desired outcome in one sentence right now, the ask isn't clear. Run Step 1 before deciding. |
-| "Asking too many questions wastes their time" | Time wasted by 4–6 targeted questions is small. Time wasted by building the wrong thing is enormous, and the user is the one bearing that cost. |
-| "I'll figure it out as I build" | Switching costs after code exists are 10x what they are now. Discovery during implementation is rework. |
-| "They said 'whatever you think,' so I should just decide" | "Whatever you think" is delegation, not decision. Re-ask with two concrete options as a choice. |
-| "I should give them several options to pick from" | Options work when the user knows what they want and is choosing between trade-offs. They don't know what they want yet. Listing options widens the search; asking narrows it. |
-| "If I attach my guess, I'm leading them" | Leading is the point. Reacting is faster than generating from scratch. The risk is sycophancy, not leading; mitigate by being visibly willing to be wrong. |
-| "We've talked enough, I get it" | Test it: can you predict their reaction to the next three questions? If not, you don't get it yet. |
-| "The user said yes, we're done" | If the yes followed a vague restate or an open-ended "sounds good," the yes is hollow. Restate concretely and re-confirm. |
+| "这个需求已经够清楚了" | 如果你现在无法用一句话写出用户期望的结果，这个需求就不清楚。在决定之前先跑步骤 1。 |
+| "问太多问题是浪费他们的时间" | 4–6 个有针对性问题浪费的时间很少。构建错误东西浪费的时间是巨大的，而且承担这个成本的是用户。 |
+| "我边构建边弄清楚" | 代码存在之后的切换成本是现在的 10 倍。实现过程中的发现就是返工。 |
+| "他们说了'随你便'，所以我就该自己决定" | "随你便"是授权，不是决策。给出两个具体选项，以选择的形式重新再问。 |
+| "我应该给他们几个选项挑" | 选项在用户知道自己想要什么、并且是在权衡取舍时才有效。他们还不知道自己想要什么。列出选项是拓宽搜索；提问是收窄它。 |
+| "如果我附上猜测，就是在引导他们" | 引导正是重点。对猜测做出反应，比从头生成要快。风险是谄媚，而不是引导；通过让自己明显愿意被反驳来缓解。 |
+| "我们已经聊得够多了，我懂了" | 检验一下：你能预测他们对接下来三个问题的反应吗？如果不能，你还没懂。 |
+| "用户说了'是'，我们完成了" | 如果这个"是"跟在一个含糊的重述或一个开放式的"sounds good"后面，那么这个"是"是空洞的。具体地重述并重新确认。 |
 
-## Red Flags
+## 危险信号
 
-- Three or more questions in a single message: that's batching, not interviewing
-- A question without your hypothesis attached: that's surveying, not committing
-- Accepting "whatever you think is best" as a terminal answer
-- Producing a spec, plan, or task list before the user has explicitly confirmed your restate
-- Questions framed as "what would be best practice?" instead of "what do you actually want?"
-- The user gives a sophistication-signaling answer ("scalable", "clean", "modern") and you accept it without probing whether it's what they actually want
-- Three or more rounds without your confidence visibly rising: you're asking the wrong questions, step back and reframe
-- A confidence number below ~70% with no reason attached: the user can't help close the gap if they don't know what's missing
-- Saving the intent doc before the user has confirmed (the doc itself implies a yes the user didn't give)
-- Skipping the "Out of scope" line in the restate (silent disagreement about non-goals is half of misalignment)
+- 一条消息里连续问三个或更多问题：这是批量，不是访谈
+- 一个没有附上你的假设的问题：这是在调查，不是承诺
+- 把"whatever you think is best"当作最终回答接受
+- 在用户明确确认你的重述之前就产出 spec、计划或任务清单
+- 把问题框成"什么是最佳实践？"而不是"你实际想要什么？"
+- 用户给出一个彰显成熟的回答（"可扩展"、"干净"、"现代"），而你未加探究就接受了，不确认那是否是他们真正想要的
+- 三轮以上你的置信度没有明显上升：你在问错问题，退一步重新框定
+- 置信度数值低于约 70% 却没有任何理由：用户不知道缺了什么，就无法帮你弥合差距
+- 在用户确认之前就保存意图文档（文档本身就暗示了一个用户并没有给出的"是"）
+- 在重述中跳过"Out of scope"那一行（关于非目标的心照不宣的分歧，占错配的一半）
 
-## Verification
+## 验证
 
-After applying interview-me:
+应用 interview-me 之后：
 
-- [ ] An explicit hypothesis with a confidence number was stated in the first turn
-- [ ] Every confidence number below ~70% was accompanied by a one-line reason (what's still unresolved or missing)
-- [ ] Questions were asked one at a time, each with the agent's guess attached
-- [ ] At least one "what would you actually want if you didn't have to justify it?" probe ran when the user gave a sophistication-signaling or convention-signaling answer
-- [ ] A concrete restate (Outcome / User / Why now / Success / Constraint / Out of scope) was written back to the user
-- [ ] The user confirmed the restate with an explicit yes (not "whatever you think," not "sounds good," not silence)
-- [ ] At the stop point, the agent could predict reactions to the next three questions it would ask
-- [ ] Any handoff to a downstream skill (`idea-refine`, `spec-driven-development`) was framed in terms of the confirmed intent, not the original underspecified ask
+- [ ] 第一轮就陈述了一个明确的假设，并附上置信度数值
+- [ ] 每个低于约 70% 的置信度数值都附带一行理由（还有什么未解决或缺失的）
+- [ ] 问题一次只问一个，每个都附上 agent 的猜测
+- [ ] 当用户给出彰显成熟或顺应惯例的回答时，至少进行了一次"如果你不必向任何人证明这件事，你实际想要的是什么？"的探究
+- [ ] 一个具体重述（Outcome / User / Why now / Success / Constraint / Out of scope）被写回给用户
+- [ ] 用户用一个明确的"是"确认了重述（不是"whatever you think"，不是"sounds good"，不是沉默）
+- [ ] 在停止点时，agent 能预测它接下来要问的三个问题的反应
+- [ ] 任何移交给下游技能（`idea-refine`、`spec-driven-development`）的做法，都是基于确认后的意图来框定的，而不是基于最初那个不明确的需求

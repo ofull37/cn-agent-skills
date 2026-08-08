@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# This script helps initialize the ideas directory for the idea-refine skill.
+# 此脚本用于初始化 idea-refine 技能的 ideas 目录。
 
 IDEAS_DIR="docs/ideas"
 

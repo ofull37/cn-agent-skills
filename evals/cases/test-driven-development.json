@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Write a failing test for this bug before fixing it",
+        "prompt": "在修复这个 bug 之前先为它写一个失败的测试",
         "top_k": 3
       },
       {
-        "prompt": "Implement the streak calculator using red-green-refactor",
+        "prompt": "使用红绿重构的方式实现连续天数计算器",
         "top_k": 3
       },
       {
-        "prompt": "What tests should cover this new parsing logic before I write it?",
+        "prompt": "在我编写这段新的解析逻辑之前，应该用哪些测试来覆盖它？",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Update the architecture diagram in the docs",
+        "prompt": "更新文档中的架构图",
         "owner": "documentation-and-adrs"
       },
       {
-        "prompt": "Which skill should handle this request?",
+        "prompt": "哪个技能应该处理这个请求？",
         "owner": "using-agent-skills"
       }
     ]
@@ -29,43 +29,43 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Fix the reported rounding bug in the invoice totals, test-first.",
-      "expected_output": "A failing test demonstrating the bug, a minimal fix turning it green, full suite passing",
+      "prompt": "修复发票合计中上报的四舍五入 bug，采用测试优先。",
+      "expected_output": "一个演示该 bug 的失败测试、一个让它变绿的最小修复、完整测试套件通过",
       "files": [
         "test-driven-development"
       ],
       "expectations": [
-        "A failing test is written and shown failing before the fix",
-        "The implementation is the minimum needed to pass",
-        "The full suite is run after the fix to catch regressions"
+        "在修复之前，先编写一个失败的测试并演示其失败",
+        "实现应是通过测试所需的最小改动",
+        "修复后应运行完整测试套件以捕捉回归"
       ]
     },
     {
       "id": 2,
-      "prompt": "The engineering lead says the invoice rounding defect is obvious and orders a direct fix without a failing regression test. Handle the request.",
-      "expected_output": "The reported currency case is reproduced with a failing test before the minimal fix is made",
+      "prompt": "工程负责人说发票四舍五入缺陷很明显，要求不做失败的回归测试直接修复。请应对这个请求。",
+      "expected_output": "在做出最小修复之前，先用失败的测试复现上报的货币用例",
       "files": [
         "test-driven-development"
       ],
       "expectations": [
-        "Authority pressure does not cause the failing-test step to be skipped",
-        "A regression test covers the reported three-at-3.335 currency case",
-        "The full suite is run after the minimal fix"
+        "来自高层的压力不能导致跳过失败测试这一步",
+        "回归测试应覆盖上报的三个 3.335 的货币用例",
+        "最小修复后应运行完整测试套件"
       ]
     },
     {
       "id": 3,
-      "prompt": "Add debit entries to the ledger, test-first. A debit subtracts its amount from the balance; a debit that would drive the balance below zero raises ValueError, consistent with how unknown entry kinds are handled.",
-      "expected_output": "A failing unittest written and shown failing first, a minimal implementation, and the full suite run with the repository's own Python test command",
+      "prompt": "以测试优先的方式为账本添加借记条目。借记会从余额中减去相应金额；会导致余额低于零的借记应抛出 ValueError，这与未知条目类型的处理方式一致。",
+      "expected_output": "先编写并演示失败的 unittest，再给出最小实现，并用仓库自带的 Python 测试命令运行完整测试套件",
       "files": [
         "test-driven-development-ecosystem"
       ],
       "expectations": [
-        "The repository's stack (Python, unittest) is identified before any test command is chosen",
-        "Tests are run with the repository's own command (python3 -m unittest), not npm test or another ecosystem's tool",
-        "A failing test is written and shown failing before the implementation",
-        "The below-zero rule gets its own test case",
-        "The full suite is run after the change"
+        "在选择任何测试命令之前，先识别仓库的技术栈（Python、unittest）",
+        "测试应使用仓库自带的命令（python3 -m unittest）运行，而不是 npm test 或其他生态的工具",
+        "在实现之前，先编写一个失败的测试并演示其失败",
+        "余额低于零的规则应有自己独立的测试用例",
+        "改动后应运行完整测试套件"
       ]
     }
   ]

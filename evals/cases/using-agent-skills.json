@@ -3,40 +3,40 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Which skill should I use for this task?",
+        "prompt": "这个任务我应该用哪个技能？",
         "top_k": 3
       },
       {
-        "prompt": "How do I decide which workflow applies to this piece of work?",
+        "prompt": "我该如何决定哪套工作流适用于这项工作？",
         "top_k": 3
       },
       {
-        "prompt": "Route this request to the right skill in the pack",
+        "prompt": "把这个请求路由到技能包中正确的技能",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Debug the null pointer crash in checkout",
+        "prompt": "调试结账过程中的空指针崩溃",
         "owner": "debugging-and-error-recovery"
       },
       {
-        "prompt": "Make the modal accessible for keyboard users"
+        "prompt": "让模态框对键盘用户可访问"
       }
     ]
   },
   "evals": [
     {
       "id": 1,
-      "prompt": "A user asks: 'the login page is broken after yesterday's deploy'. Decide which skill applies and why.",
-      "expected_output": "Correct routing through the decision tree with the chosen skill and rationale",
+      "prompt": "一位用户问：「昨天的部署之后登录页面坏了」。请决定哪个技能适用以及为什么。",
+      "expected_output": "通过决策树进行正确的路由，并给出所选技能及理由",
       "files": [
         "using-agent-skills"
       ],
       "expectations": [
-        "The chosen skill matches the decision tree in the meta-skill",
-        "The rationale references the routing logic rather than guessing",
-        "Core operating behaviors (assumptions surfaced) are respected"
+        "所选技能应与元技能中的决策树一致",
+        "理由应引用路由逻辑，而不是猜测",
+        "应遵守核心操作行为（浮出水面的假设）"
       ]
     }
   ]

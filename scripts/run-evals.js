@@ -86,13 +86,29 @@ function stem(t) {
   return t;
 }
 
+function cjkTokenize(text) {
+  // CJK text has no spaces, so the regex strip below would erase it entirely.
+  // Emit character bigrams — the standard cheap stand-in for word segmentation.
+  // Both prompts and descriptions pass through here, so shared bigrams produce
+  // cosine overlap for zh-CN content.
+  const tokens = [];
+  for (const run of text.match(/[一-鿿]+/g) || []) {
+    for (let i = 0; i < run.length - 1; i++) tokens.push(run.slice(i, i + 2));
+    if (run.length === 1) tokens.push(run);
+  }
+  return tokens;
+}
+
 function tokenize(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, ' ')
-    .split(/[\s-]+/)
-    .filter((t) => t.length > 2 && !STOP.has(t))
-    .map(stem);
+  return [
+    ...cjkTokenize(text),
+    ...text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, ' ')
+      .split(/[\s-]+/)
+      .filter((t) => t.length > 2 && !STOP.has(t))
+      .map(stem),
+  ];
 }
 
 function termFreq(tokens) {

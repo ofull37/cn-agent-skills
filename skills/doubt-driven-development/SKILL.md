@@ -1,54 +1,54 @@
 ---
 name: doubt-driven-development
-description: Subjects every non-trivial decision to a fresh-context adversarial review before it stands. Use when correctness matters more than speed, when working in unfamiliar code, when stakes are high (production, security-sensitive logic, irreversible operations), or any time a confident output would be cheaper to verify now than to debug later.
+description: 让每一个非平凡的决策在确立之前，都经受一次全新上下文的对抗性评审和压力测试，以暴露隐藏的失败模式。当正确性比速度更重要、当在不熟悉的代码中工作、当风险很高（生产环境、安全敏感逻辑、不可逆操作）时使用，或者当任何一次自信的输出现在验证比以后调试更便宜时使用。
 ---
 
-# Doubt-Driven Development
+# 怀疑驱动开发
 
-## Overview
+## 概述
 
-A confident answer is not a correct one. Long sessions accumulate context that quietly turns assumptions into "facts" without anyone noticing. Doubt-driven development is the discipline of materializing a fresh-context reviewer — biased to **disprove**, not approve — before any non-trivial output stands.
+一个自信的回答不等于一个正确的回答。长时间的会话会累积上下文，在没人注意到的情况下悄悄把假设变成"事实"。怀疑驱动开发是这样一种纪律：在任何非平凡输出确立之前，实体化一个全新上下文的评审者——他偏向于**证伪**，而不是**认可**。
 
-This is not `/review`. `/review` is a verdict on a finished artifact. This is an in-flight posture: non-trivial decisions get cross-examined while course-correction is still cheap.
+这不是 `/review`。`/review` 是对成品产物的一个裁定。这是一种进行中的姿态：在纠正仍然便宜的时候，非平凡决策会被交叉质询。
 
-## When to Use
+## 何时使用
 
-A decision is **non-trivial** when at least one of these is true:
+当至少满足以下一项时，一个决策就是**非平凡**的：
 
-- It introduces or modifies branching logic
-- It crosses a module or service boundary
-- It asserts a property the type system or compiler cannot verify (thread safety, idempotence, ordering, invariants)
-- Its correctness depends on context the future reader cannot see
-- Its blast radius is irreversible (production deploy, data migration, public API change)
+- 它引入或修改了分支逻辑
+- 它跨越了模块或服务边界
+- 它断言了类型系统或编译器无法验证的性质（线程安全、幂等性、排序、不变量）
+- 它的正确性依赖于未来读者看不到的上下文
+- 它的爆炸半径是不可逆的（生产部署、数据迁移、公共 API 变更）
 
-Apply the skill when:
+在以下情况应用本技能：
 
-- About to make an architectural decision under uncertainty
-- About to commit non-trivial code
-- About to claim a non-obvious fact ("this is safe", "this scales", "this matches the spec")
-- Working in code you don't fully understand
+- 即将在不确定之下做出一个架构决策
+- 即将提交非平凡代码
+- 即将断言一个不显而易见的事实（"这很安全"、"这能扩展"、"这符合规格"）
+- 在你不能完全理解的代码中工作
 
-**When NOT to use:**
+**何时不使用：**
 
-- Mechanical operations (renaming, formatting, file moves)
-- Following a clear, unambiguous user instruction
-- Reading or summarizing existing code
-- One-line changes with obvious correctness
-- Pure tooling operations (running tests, listing files)
-- The user has explicitly asked for speed over verification
+- 机械性操作（重命名、格式化、移动文件）
+- 遵循一条清晰、无歧义的用户指令
+- 阅读或总结现有代码
+- 正确性显而易见的单行变更
+- 纯工具操作（运行测试、列出文件）
+- 用户明确要求速度优先于验证
 
-If you doubt every keystroke, you ship nothing. The skill applies only to non-trivial decisions as defined above.
+如果你怀疑每一次击键，你就什么也交付不了。本技能只适用于上面定义的非平凡决策。
 
-## Loading Constraints
+## 加载约束
 
-This skill is designed for the **main-session orchestrator**, where Step 3 (DOUBT, detailed below) can spawn a fresh-context reviewer.
+本技能是为**主会话编排者**设计的，其中步骤 3（DOUBT，下面详述）可以派生一个全新上下文的评审者。
 
-- **Do NOT add this skill to a persona's `skills:` frontmatter.** A persona that follows Step 3 would spawn another persona — the orchestration anti-pattern explicitly forbidden by `references/orchestration-patterns.md` ("personas do not invoke other personas").
-- **If you find yourself applying this skill from inside a subagent context** (where Claude Code prevents nested subagent spawn): the preferred path is to surface to the user that doubt-driven cannot run nested and let the main session handle it. As a last resort only, a degraded self-questioning fallback exists — rewrite ARTIFACT + CONTRACT as a fresh self-prompt with a hard mental separator from your prior reasoning, and walk Steps 1–5. This is **not fresh-context review** (you carry your own context with you), so flag the result as degraded and prefer escalation whenever the user is reachable.
+- **不要把本技能添加进某个 persona 的 `skills:` frontmatter。** 一个遵循步骤 3 的 persona 会派生另一个 persona——这正是 `references/orchestration-patterns.md` 明确禁止的编排反模式（"personas do not invoke other personas"）。
+- **如果你发现自己从子 agent 上下文中应用本技能**（Claude Code 会阻止嵌套子 agent 派生）：首选的路径是向用户浮出"怀疑驱动无法嵌套运行"，让主会话处理它。作为最后的办法，存在一个降级的自我质询回退方案——把 ARTIFACT + CONTRACT 重写成一个全新的自我提示，并刻意与你先前的推理做心理隔离，然后走完步骤 1-5。这**不是**全新上下文评审（你随身带着自己的上下文），所以把结果标记为降级的，并且只要用户可达，就优先升级。
 
-## The Process
+## 流程
 
-Copy this checklist when applying the skill:
+应用本技能时复制这份清单：
 
 ```
 Doubt cycle:
@@ -59,9 +59,9 @@ Doubt cycle:
 - [ ] Step 5: STOP — met stop condition (trivial findings, 3 cycles, or user override)
 ```
 
-### Step 1: CLAIM — Surface what stands
+### 步骤 1：CLAIM —— 浮出什么在确立
 
-Name the decision in two or three lines:
+用两三行给这个决策命名：
 
 ```
 CLAIM: "The new caching layer is thread-safe under the
@@ -70,21 +70,21 @@ WHY THIS MATTERS: a race here corrupts user data and is
                   hard to detect in QA.
 ```
 
-If you can't write the claim that compactly, you have a vibe, not a decision. Surface it before scrutinizing it.
+如果你无法把声明写得那么紧凑，你拥有的是一种感觉，而不是一个决策。在审视它之前先把它浮出来。
 
-### Step 2: EXTRACT — Smallest reviewable unit
+### 步骤 2：EXTRACT —— 最小的可评审单元
 
-A fresh-context reviewer needs the **artifact** and the **contract**, not the journey.
+一个全新上下文的评审者需要**产物**和**契约**，而不是历程。
 
-- Code: the diff or the function — not the whole file
-- Decision: the proposal in 3–5 sentences plus the constraints it has to satisfy
-- Assertion: the claim plus the evidence that supposedly supports it (kept distinct from the Step 1 CLAIM block, which is the orchestrator's hypothesis under scrutiny)
+- 代码：diff 或函数——而不是整个文件
+- 决策：3-5 句话的提案，外加它必须满足的约束
+- 断言：声明加据称支持它的证据（与步骤 1 的 CLAIM 块保持区分——那个是受审视的编排者假设）
 
-Strip your reasoning. If you hand over conclusions, you'll get back validation of your conclusions. The unit must be small enough that a reviewer can hold it in mind in one read — if it's a 500-line PR, decompose first.
+剥掉你的推理。如果你交出的是结论，你得到的会是你的结论的验证。单元必须足够小，让评审者能一遍读入脑中——如果它是一个 500 行的 PR，先分解。
 
-### Step 3: DOUBT — Invoke the fresh-context reviewer
+### 步骤 3：DOUBT —— 调用全新上下文的评审者
 
-The reviewer's prompt **must be adversarial**. Framing decides the answer.
+评审者的提示**必须是对抗性的**。框架决定答案。
 
 ```
 Adversarial review. Find what is wrong with this artifact.
@@ -103,38 +103,38 @@ ARTIFACT: <paste artifact>
 CONTRACT: <paste contract>
 ```
 
-**Pass ARTIFACT + CONTRACT only. Do NOT pass the CLAIM.** Handing the reviewer your conclusion biases it toward agreement. The reviewer must independently determine whether the artifact satisfies the contract.
+**只传 ARTIFACT + CONTRACT。不要传 CLAIM。** 把你的结论交给评审者，会让它偏向同意。评审者必须独立判断产物是否满足契约。
 
-In Claude Code, the role-based reviewers in `agents/` start with isolated context by design and are usable here — see `agents/` for the roster and per-domain match.
+在 Claude Code 中，`agents/` 里基于角色的评审者天然以隔离上下文启动，在这里可用——参见 `agents/` 获取名册和按领域匹配。
 
-**The adversarial prompt above takes precedence over the persona's default response shape.** Personas like `code-reviewer` are written to produce balanced verdicts with both strengths and weaknesses; doubt-driven needs issues-only output. Paste the adversarial prompt verbatim into the invocation so it overrides the persona's default. If a persona's response shape can't be overridden cleanly, fall back to a generic subagent with the adversarial prompt.
+**上面的对抗性提示优先于 persona 的默认回复形态。** 像 `code-reviewer` 这样的 persona 被设计成产出带优缺点均衡的裁定；怀疑驱动需要的是只列问题的输出。把对抗性提示逐字粘贴进调用中，让它覆盖 persona 的默认。如果某个 persona 的回复形态无法干净地覆盖，就回退到带对抗性提示的通用子 agent。
 
-#### Cross-model escalation
+#### 跨模型升级
 
-A single-model reviewer shares blind spots with the original author — a colder, different-architecture model catches them. Doubt-driven is already opt-in for non-trivial decisions, so within that scope offering cross-model is part of the skill's value, not optional friction.
+单模型评审者与原作者共享盲区——一个更冷静、不同架构的模型能抓住它们。怀疑驱动对非平凡决策本来就是可选的，所以在这个范围内提供跨模型是本技能价值的一部分，不是可选的摩擦。
 
-**Interactive sessions: always offer. Never silently skip.**
+**交互式会话：始终提供。绝不默默跳过。**
 
-**Step 1: Ask the user**
+**步骤 1：问用户**
 
-After the single-model review in Step 3 above, but before RECONCILE, pause and ask:
+在上述步骤 3 的单模型评审之后、RECONCILE 之前，暂停并询问：
 
-> *"Single-model review complete. Want a cross-model second opinion? Options: Gemini CLI, Codex CLI, manual external review (you paste it elsewhere), or skip."*
+> *"单模型评审完成。想要一个跨模型的第二意见吗？选项：Gemini CLI、Codex CLI、手动外部评审（你粘贴到别处），或跳过。"*
 
-This question is mandatory in every interactive doubt cycle — even on artifacts that feel low-stakes. The user — not the agent — decides whether the cost is worth it. The agent's job is to surface the choice.
+这个问题在每一个交互式怀疑循环中都是强制的——即使是那些感觉风险很低的产物。决定成本是否值得的是用户——而不是 agent。agent 的工作是浮出这个选择。
 
-**Step 2: If the user picks a CLI — verify, then invoke**
+**步骤 2：如果用户选了某个 CLI —— 先验证，再调用**
 
-1. Check the tool is in PATH (`which gemini`, `which codex`).
-2. Test it works (`gemini --version` or equivalent) before passing the full prompt — a stale or broken binary may pass `which` but fail on real input.
-3. Confirm the exact invocation with the user, including required flags, auth, and env vars (e.g., API keys). Implementations vary; never assume.
-4. Pass ARTIFACT + CONTRACT + the adversarial prompt **only**. No session context, no CLAIM.
-5. Mind shell escaping. If the artifact contains quotes, `$(...)`, or backticks, prefer stdin (`echo … | gemini`) or a heredoc over inline `-p "…"`. When in doubt, ask the user to confirm the invocation before running it.
-6. Take the output into Step 4 (RECONCILE).
+1. 检查工具在 PATH 中（`which gemini`、`which codex`）。
+2. 在传完整提示之前测试它能工作（`gemini --version` 或等价物）——一个过时或损坏的二进制可能通过 `which`，但在真实输入上失败。
+3. 与用户确认确切的调用方式，包括必需的标志、认证和环境变量（例如 API 密钥）。实现各有不同；绝不要假设。
+4. 只传 ARTIFACT + CONTRACT + 对抗性提示。没有会话上下文，没有 CLAIM。
+5. 留意 shell 转义。如果产物包含引号、`$(...)` 或反引号，优先用 stdin（`echo … | gemini`）或 heredoc，而不是内联的 `-p "…"`。拿不准时，在运行前让用户确认调用方式。
+6. 把输出带到步骤 4（RECONCILE）。
 
-**Never interpolate the artifact into a shell-quoted argument.** Code, markdown, and review prompts routinely contain backticks, `$(...)`, and quote characters that will either truncate the prompt or execute embedded shell. Write the full prompt to a file and pipe it through stdin.
+**绝不要把产物插进一个 shell 引号参数里。** 代码、markdown 和评审提示经常包含反引号、`$(...)` 和引号字符，它们要么截断提示，要么执行内嵌的 shell。把完整提示写进一个文件，通过 stdin 管道传入。
 
-Example shapes (verify flags against your installed tool — syntax differs across implementations and versions):
+示例形态（对照你安装的工具验证标志——语法在不同实现和版本间有差异）：
 
 ```bash
 # Write the adversarial prompt + ARTIFACT + CONTRACT to a temp file first.
@@ -148,96 +148,96 @@ codex exec --sandbox read-only -C <repo-path> - < /tmp/doubt-prompt.md
 gemini --approval-mode plan -p "" < /tmp/doubt-prompt.md
 ```
 
-A read-only sandbox is the load-bearing detail: a doubt artifact may itself contain instructions (intentional or accidental prompt injection) that the cross-model CLI would otherwise execute against your workspace.
+只读沙箱是关键的细节：一个怀疑产物本身可能包含（有意或无意的）提示注入指令，而跨模型 CLI 否则会在你的工作区执行它们。
 
-**Step 3: If the CLI is unavailable or fails**
+**步骤 3：如果 CLI 不可用或失败**
 
-Surface the failure explicitly. Offer: run it manually, try a different tool, or skip. Do not silently fall back to single-model — the user should know cross-model didn't happen.
+明确浮出失败。提供：手动运行、尝试不同工具，或跳过。不要默默回退到单模型——用户应当知道跨模型没有发生。
 
-**Step 4: If the user skips**
+**步骤 4：如果用户跳过**
 
-Acknowledge the skip in the output (*"Proceeding with single-model findings only"*) and continue to RECONCILE. Skipping is fine; silent skipping is not.
+在输出中承认这次跳过（*"Proceeding with single-model findings only"*），然后继续到 RECONCILE。跳过没问题；默默跳过才有问题。
 
-**Non-interactive contexts** (CI, `/loop`, autonomous-loop, scheduled runs):
+**非交互式环境**（CI、`/loop`、自主循环、定时运行）：
 
-- Cross-model is **skipped**, and the skip must be **announced** in the output: *"Cross-model skipped: non-interactive context."*
-- **Never invoke an external CLI without explicit user authorization** — this is a load-bearing safety property.
+- 跨模型被**跳过**，且必须在输出中**宣告**这次跳过：*"Cross-model skipped: non-interactive context."*
+- **未经用户明确授权，绝不调用外部 CLI** —— 这是一条关键的负载安全属性。
 
-Cross-model adds cost, latency, and tool fragility. The agent surfaces the choice every cycle; the user decides whether this artifact warrants it.
+跨模型会增加成本、延迟和工具脆弱性。agent 每个循环都浮出这个选择；由用户决定这个产物是否值得。
 
-### Step 4: RECONCILE — Fold findings back
+### 步骤 4：RECONCILE —— 把发现折回
 
-The reviewer's output is data, not verdict. **You are still the orchestrator.** Re-read the artifact text against each finding before classifying — rubber-stamping the reviewer is the same failure mode as ignoring it.
+评审者的输出是数据，不是裁定。**你仍然是编排者。** 在分类之前，把产物文本对照每一条发现重新读一遍——盖章通过评审者，和忽略它是同样的失败模式。
 
-For each finding, classify in this **precedence order** (first matching class wins):
+对每一条发现，按这个**优先顺序**分类（最先匹配的类别胜出）：
 
-1. **Contract misread** — reviewer flagged something specifically because the CONTRACT you provided was unclear or incomplete. Fix the contract first, re-classify on the next cycle.
-2. **Valid + actionable** — real issue requiring a change to the artifact. Change it, re-loop.
-3. **Valid trade-off** — issue is real but cost of fixing exceeds cost of accepting. Document the trade-off explicitly so the user sees it.
-4. **Noise** — reviewer flagged something that's actually correct under context the reviewer didn't have. Note it, move on, and ask: would adding that context to the contract have prevented the false flag?
+1. **契约误读** —— 评审者标记某件事，正因为你提供的 CONTRACT 不清楚或不完整。先修契约，在下一个循环重新分类。
+2. **有效且可行动** —— 真正的问题，需要对产物做出变更。改变它，重新循环。
+3. **有效的权衡** —— 问题是真实的，但修复的成本超过接受它的成本。明确记录这个权衡，让用户看到。
+4. **噪音** —— 评审者标记的某件事，在评审者没有的上下文下实际上是正确的。记下来，继续前进，并问：把那个上下文加进契约，会不会阻止这次误报？
 
-A fresh reviewer can be wrong because it lacks context. Don't defer just because it's "fresh."
+一个全新评审者可能因为缺少上下文而犯错。不要因为它"全新"就无脑服从。
 
-### Step 5: STOP — Bounded loop, not recursion
+### 步骤 5：STOP —— 有界的循环，不是递归
 
-Stop when:
+在以下情况停止：
 
-- Next iteration returns only trivial or already-considered findings, **or**
-- 3 cycles completed (escalate to user, don't grind a fourth alone), **or**
-- User explicitly says "ship it"
+- 下一次迭代只返回琐碎或已经考虑过的发现，**或**
+- 完成了 3 个循环（升级给用户，不要独自硬磨第四个），**或**
+- 用户明确说"发布吧"（"ship it"）
 
-If after 3 cycles the reviewer still surfaces substantive issues, the artifact may not be ready. Surface this to the user — three unresolved cycles is information about the artifact, not a reason to keep looping.
+如果 3 个循环之后评审者仍然浮出实质性问题，这个产物可能还没准备好。把它浮出给用户——三个未解决的循环说明的是产物本身，而不是继续循环的理由。
 
-If 3 cycles is "obviously insufficient" because the artifact is large: the artifact is too big — return to Step 2 and decompose. Do not lift the bound.
+如果因为产物很大而 3 个循环"明显不够"：那是产物太大了——回到步骤 2 去分解。不要抬高这个界限。
 
-## Common Rationalizations
+## 常见合理化借口
 
-| Rationalization | Reality |
+| 合理化借口 | 现实 |
 |---|---|
-| "I'm confident, skip the doubt step" | Confidence correlates poorly with correctness on novel problems. Moments of certainty are exactly when blind spots hide. |
-| "Spawning a reviewer is expensive" | Debugging a wrong commit in production is more expensive. The check is bounded; the bug isn't. |
-| "The reviewer will just nitpick" | Only if unscoped. Constrain the prompt to "issues that would make this fail under the contract." |
-| "I'll do doubt at the end with `/review`" | `/review` is a final gate. Doubt-driven catches wrong directions early when course-correction is cheap. By PR time it's too late. |
-| "If I doubt every step I'll never ship" | The skill applies to non-trivial decisions, not every keystroke. Re-read "When NOT to Use." |
-| "Two opinions are always better than one" | Not when the second has less context and produces noise. Reconcile, don't defer. |
-| "The reviewer disagreed so I was wrong" | The reviewer lacks your context — disagreement is information, not verdict. Re-read the artifact, classify, then decide. |
-| "Cross-model is always better" | Cross-model catches blind spots a single model shares with itself, but it adds cost and tool fragility. Offer it every interactive doubt cycle — the user decides whether the artifact warrants it. The agent's job is to surface the choice, not to gate it. |
-| "User said yes once, so I can keep invoking the CLI" | Each invocation is its own authorization. The artifact, the prompt, and the flags change between calls — re-confirm the exact command with the user before every run. |
+| "我很自信，跳过怀疑这一步" | 在新问题上，自信与正确性相关性很差。确定感十足的时刻，正是盲区隐藏的时候。 |
+| "派生一个评审者很贵" | 在生产环境调试一个错误提交更贵。检查是有界的；bug 不是。 |
+| "评审者只会吹毛求疵" | 只有在不限定范围时才会。把提示约束到"会让它在契约下失败的问题"。 |
+| "我到最后用 `/review` 做怀疑" | `/review` 是最终闸门。怀疑驱动在纠正还便宜的时候，早点抓住错误方向。到 PR 时间已经太晚了。 |
+| "如果每一步都怀疑，我永远交付不了" | 本技能适用于非平凡决策，而不是每一次击键。重读"何时不使用"。 |
+| "两个意见总比一个好" | 当第二个上下文更少、只产生噪音时不是。要调和，不要服从。 |
+| "评审者不同意，所以是我错了" | 评审者缺少你的上下文——分歧是信息，不是裁定。重读产物，分类，然后决定。 |
+| "跨模型总是更好" | 跨模型能抓住单个模型与自身共享的盲区，但它会增加成本和工具脆弱性。在每一个交互式怀疑循环中都提供它——由用户决定这个产物是否值得。agent 的工作是浮出这个选择，而不是把关它。 |
+| "用户说过一次是，所以我就可以一直调用 CLI" | 每一次调用都是它自己的授权。产物、提示和标志在调用之间会变——每次运行前都与用户重新确认确切的命令。 |
 
-## Red Flags
+## 危险信号
 
-- Spawning a fresh-context reviewer for a one-line rename or formatting change
-- Treating reviewer output as authoritative without re-reading the artifact text
-- Looping >3 cycles without escalating to the user
-- Prompting the reviewer with "is this good?" instead of "find issues"
-- Skipping doubt under time pressure on a high-stakes decision
-- Re-spawning fresh-context on an unchanged artifact (you'll get the same findings; you're stalling)
-- **Doubt theater (checkable signal)**: across 2 or more cycles where the reviewer surfaced substantive findings, zero findings were classified as actionable. You are validating, not doubting. Stop and escalate.
-- Doubting only after committing — that's `/review`, not doubt-driven development
-- Hardcoding an external CLI invocation without confirming with the user that the tool exists, is configured, and accepts that exact syntax
-- **Silently skipping cross-model in an interactive doubt cycle.** Even when not recommending it, the offer must be visible. Skipping is fine; silent skipping is not.
-- Falling back silently when an external CLI errors or is missing — surface the failure and let the user redirect
-- Stripping the contract from the reviewer's input
-- Passing the CLAIM to the reviewer (biases toward agreement)
+- 为一次单行重命名或格式化变更派生全新上下文的评审者
+- 不重新阅读产物文本就把评审者输出当作权威
+- 循环超过 3 次而不升级给用户
+- 用"这个好吗？"而不是"找出问题"来提示评审者
+- 在高风险决策上迫于时间压力跳过怀疑
+- 在一个未改变的产物上重新派生全新上下文（你会得到同样的发现；你只是在拖延）
+- **怀疑表演（可检查的信号）：** 在 2 个或更多评审者浮出实质性发现的循环中，零条发现被分类为可行动。你在验证，不是在怀疑。停下来并升级。
+- 只在提交之后才怀疑——那是 `/review`，不是怀疑驱动开发
+- 不与用户确认工具存在、已配置并接受那个确切语法，就硬编码外部 CLI 调用
+- **在交互式怀疑循环中默默跳过跨模型。** 即使不推荐它，这个提供也必须是可见的。跳过没问题；默默跳过才有问题。
+- 当外部 CLI 报错或缺失时默默回退——浮出失败，让用户重新定向
+- 从评审者输入中剥掉契约
+- 把 CLAIM 传给评审者（偏向同意）
 
-## Interaction with Other Skills
+## 与其他技能的交互
 
-- **`code-review-and-quality` / `/review`**: complementary. `/review` is post-hoc PR verdict; doubt-driven is in-flight per-decision. Use both.
-- **`source-driven-development`**: SDD verifies *facts about frameworks* against official docs. Doubt-driven verifies *your reasoning about the artifact*. SDD checks the API exists; doubt-driven checks you used it correctly under the contract.
-- **`test-driven-development`**: TDD's RED step is doubt made concrete — a failing test is a disproof attempt. When TDD applies, that failing test *is* the doubt step for behavioral claims.
-- **`debugging-and-error-recovery`**: when the reviewer surfaces a real failure mode, drop into the debugging skill to localize and fix.
-- **Repo orchestration rules** (`references/orchestration-patterns.md`): this skill orchestrates from the main session. A persona calling another persona is anti-pattern B — see Loading Constraints above.
+- **`code-review-and-quality` / `/review`**：互补。`/review` 是事后的 PR 裁定；怀疑驱动是进行中的逐决策审查。两者都用。
+- **`source-driven-development`**：SDD 对照官方文档验证*关于框架的事实*。怀疑驱动验证*你对产物的推理*。SDD 检查 API 存在；怀疑驱动检查你在契约下正确使用了它。
+- **`test-driven-development`**：TDD 的 RED 步骤是具体化的怀疑——一个失败的测试就是一次证伪尝试。当 TDD 适用时，那个失败的测试*就是*行为声明的怀疑步骤。
+- **`debugging-and-error-recovery`**：当评审者浮出一个真实的失败模式时，进入调试技能来定位和修复。
+- **仓库编排规则**（`references/orchestration-patterns.md`）：本技能从主会话编排。一个 persona 调用另一个 persona 是反模式 B——参见上面的加载约束。
 
-## Verification
+## 验证
 
-After applying doubt-driven development:
+应用怀疑驱动开发之后：
 
-- [ ] Every non-trivial decision (per the definition above) was named explicitly as a CLAIM before standing
-- [ ] At least one fresh-context review per non-trivial artifact (a failing test produced by TDD's RED step satisfies this for behavioral claims, per Interaction with Other Skills)
-- [ ] The reviewer received ARTIFACT + CONTRACT — NOT the CLAIM, NOT your reasoning
-- [ ] The reviewer's prompt was adversarial ("find issues"), not validating ("is it good")
-- [ ] Findings were classified against the artifact text (not rubber-stamped) using the precedence: contract misread / actionable / trade-off / noise
-- [ ] A stop condition was met (trivial findings, 3 cycles, or user override)
-- [ ] In interactive mode, cross-model was **explicitly offered** to the user (regardless of artifact stakes) and the response was acknowledged in the output
-- [ ] In non-interactive mode, cross-model was skipped and the skip was announced
-- [ ] Any external CLI invocation was preceded by a PATH check, a working-binary test, syntax confirmation with the user, and explicit authorization to run
+- [ ] 每一个非平凡决策（按上面的定义）在确立之前都被明确命名为一个 CLAIM
+- [ ] 每个非平凡产物至少有一次全新上下文评审（TDD 的 RED 步骤产生的失败测试满足对行为声明的这一要求，参见"与其他技能的交互"）
+- [ ] 评审者收到了 ARTIFACT + CONTRACT——而不是 CLAIM，不是你的推理
+- [ ] 评审者的提示是对抗性的（"找出问题"），不是验证性的（"好不好"）
+- [ ] 发现是对照产物文本分类的（不是盖章通过），使用优先顺序：契约误读 / 可行动 / 权衡 / 噪音
+- [ ] 满足了一个停止条件（琐碎发现、3 个循环、或用户覆盖）
+- [ ] 在交互式模式下，跨模型被**明确提供**给用户（无论产物风险如何），且回复在输出中被承认
+- [ ] 在非交互式模式下，跨模型被跳过且这次跳过被宣告
+- [ ] 任何外部 CLI 调用之前，都做了 PATH 检查、可工作二进制测试、与用户的语法确认，以及明确的运行授权

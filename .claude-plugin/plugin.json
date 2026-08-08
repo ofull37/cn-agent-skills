@@ -1,7 +1,7 @@
 {
   "name": "agent-skills",
   "version": "0.6.6",
-  "description": "Production-grade engineering skills for AI coding agents — covering the full software development lifecycle from spec to ship.",
+  "description": "面向 AI 编码智能体的生产级工程技能——覆盖从 spec 到发布的完整软件开发生命周期。",
   "author": {
     "name": "Addy Osmani"
   },

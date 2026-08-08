@@ -1,15 +1,15 @@
 #!/bin/bash
-# sdd-cache-post.sh — PostToolUse hook for WebFetch.
+# sdd-cache-post.sh — WebFetch 的 PostToolUse hook。
 #
-# After WebFetch, stores the response body in .claude/sdd-cache/<sha>.json
-# with the current ETag / Last-Modified captured via a HEAD request so the
-# pre hook can revalidate on the next fetch.
+# WebFetch 之后，将响应正文存储在 .claude/sdd-cache/<sha>.json 中，
+# 并附上通过 HEAD 请求捕获的当前 ETag / Last-Modified，
+# 以便 pre hook 在下一次获取时重新验证。
 #
-# Keyed by URL. The caller's prompt is stored as metadata (not part of the
-# key) so a future cache hit can show what question produced the cached
-# reading. Entries without ETag or Last-Modified are not cached.
+# 以 URL 为键。调用者的提示词作为元数据存储（不属于键的一部分），
+# 这样未来的缓存命中可以显示是什么问题产生了这份缓存解读。
+# 没有 ETag 或 Last-Modified 的条目不被缓存。
 #
-# Dependencies: jq, curl, shasum (or sha256sum).
+# 依赖：jq、curl、shasum（或 sha256sum）。
 
 set -euo pipefail
 
@@ -19,8 +19,8 @@ command -v shasum >/dev/null 2>&1 || command -v sha256sum >/dev/null 2>&1 || exi
 
 if [ -t 0 ]; then INPUT="{}"; else INPUT=$(cat); fi
 
-# Debug logging: active when SDD_CACHE_DEBUG=1 is set, or when a sentinel
-# file exists at .claude/sdd-cache/.debug. Toggle with `touch` / `rm`.
+# 调试日志：当设置了 SDD_CACHE_DEBUG=1，或哨兵文件
+# 存在于 .claude/sdd-cache/.debug 时激活。用 `touch` / `rm` 切换。
 dbg() {
   local dir="${CLAUDE_PROJECT_DIR:-$PWD}/.claude/sdd-cache"
   [ "${SDD_CACHE_DEBUG:-0}" = "1" ] || [ -f "$dir/.debug" ] || return 0
@@ -34,11 +34,11 @@ PROMPT=$(printf '%s' "$INPUT" | jq -r '.tool_input.prompt // empty' 2>/dev/null 
 if [ -z "$URL" ]; then dbg "no url in tool_input, exit"; exit 0; fi
 dbg "url=$URL prompt=$(printf '%s' "$PROMPT" | head -c 80)"
 
-# WebFetch tool_response shape (Claude Code as of 2026-04): an object with
-# keys bytes, code, codeText, durationMs, result, url — content lives at
-# .result. The other keys (.output / .text / .content / .body) are kept as
-# defensive fallbacks in case the shape changes; jq returns empty if none
-# match. The string branch handles older/custom integrations.
+# WebFetch 的 tool_response 形状（截至 2026-04 的 Claude Code）：一个对象，
+# 键为 bytes、code、codeText、durationMs、result、url——内容位于
+# .result。其他键（.output / .text / .content / .body）作为
+# 防御性回退保留，以防形状变化；如果都不匹配，jq 返回空。
+# 字符串分支处理较旧的/自定义的集成。
 TOOL_RESPONSE_TYPE=$(printf '%s' "$INPUT" | jq -r '.tool_response | type' 2>/dev/null || echo "unknown")
 dbg "tool_response type=$TOOL_RESPONSE_TYPE keys=$(printf '%s' "$INPUT" | jq -r 'try (.tool_response | keys | join(",")) catch "n/a"' 2>/dev/null)"
 
@@ -63,7 +63,7 @@ if [ -z "$CONTENT" ]; then
 fi
 dbg "extracted content bytes=${#CONTENT}"
 
-# Must match the pre hook: sha256(URL), first 32 hex chars.
+# 必须与 pre hook 匹配：sha256(URL)，前 32 个十六进制字符。
 hash_key() {
   if command -v shasum >/dev/null 2>&1; then
     printf '%s' "$1" | shasum -a 256 | cut -c1-32
@@ -76,13 +76,13 @@ CACHE_DIR="${CLAUDE_PROJECT_DIR:-$PWD}/.claude/sdd-cache"
 mkdir -p "$CACHE_DIR"
 CACHE_FILE="$CACHE_DIR/$(hash_key "$URL").json"
 
-# Capture validators from the origin. Follow redirects so they match the
-# URL the agent actually talked to. Strip CR so awk's paragraph mode
-# recognises blank separators between response blocks on a redirect chain.
+# 从源服务器捕获验证器。跟随重定向，使它们匹配
+# agent 实际访问的 URL。去除 CR，让 awk 的段落模式
+# 能识别重定向链上响应块之间的空行分隔符。
 HEAD_OUT=$(curl -sI -L --max-time 5 "$URL" 2>/dev/null | tr -d '\r' || true)
 
-# Take only the final response's headers (last paragraph) to avoid picking
-# up validators from intermediate 301/302 hops.
+# 只取最终响应的响应头（最后一个段落），避免拾取
+# 中间 301/302 跳转的验证器。
 FINAL_HEADERS=$(printf '%s' "$HEAD_OUT" | awk '
   BEGIN { RS = ""; last = "" }
   { last = $0 }

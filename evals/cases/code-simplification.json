@@ -3,24 +3,24 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "This function works but it is way too clever, simplify it without changing behavior",
+        "prompt": "这个函数能用但过于炫技，请在保持行为不变的前提下简化它",
         "top_k": 3
       },
       {
-        "prompt": "Reduce the complexity of this module so juniors can maintain it",
+        "prompt": "降低这个模块的复杂度，让初级开发者也能维护它",
         "top_k": 3
       },
       {
-        "prompt": "Clean up this working code, it has grown hard to follow",
+        "prompt": "清理这段能运行的代码，它已经变得难以理解",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Add a feature flag system to the app"
+        "prompt": "为应用添加功能开关系统"
       },
       {
-        "prompt": "Diagnose why the build broke overnight",
+        "prompt": "诊断构建为什么在夜间失败了",
         "owner": "debugging-and-error-recovery"
       }
     ]
@@ -28,16 +28,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Simplify the provided 80-line function that parses config files, preserving exact behavior.",
-      "expected_output": "A simpler implementation with identical behavior and a summary of what was removed and why",
+      "prompt": "简化提供的这个解析配置文件的 80 行函数，保持行为完全一致。",
+      "expected_output": "一个行为相同但更简洁的实现，并总结删除了什么及为什么安全",
       "files": [
         "code-simplification"
       ],
       "expectations": [
-        "Behavior is preserved (tests unchanged and passing, or equivalence argued concretely)",
-        "Complexity is reduced rather than relocated",
-        "The response explains what was removed and why it was safe",
-        "No new features are added during the simplification"
+        "行为保持不变（测试未改动且通过，或具体论证了等价性）",
+        "复杂度被真正降低，而不是被转移",
+        "回答需解释删除了什么以及为什么这样删是安全的",
+        "简化过程中不得引入任何新功能"
       ]
     }
   ]

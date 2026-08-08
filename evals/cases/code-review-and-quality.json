@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Review this pull request before I merge it",
+        "prompt": "在我合并这个拉取请求之前先评审它",
         "top_k": 3
       },
       {
-        "prompt": "Do a quality pass on this diff for correctness and readability",
+        "prompt": "对这个 diff 做一次正确性和可读性方面的质量审查",
         "top_k": 3
       },
       {
-        "prompt": "Can you review the changes another model just wrote for me?",
+        "prompt": "你能评审一下另一个模型刚为我写的改动吗？",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Deploy this to production now",
+        "prompt": "立即把这个部署到生产环境",
         "owner": "shipping-and-launch"
       },
       {
-        "prompt": "Write a failing test for the bug before fixing it",
+        "prompt": "在修复这个 bug 之前先为它写一个失败的测试",
         "owner": "test-driven-development"
       }
     ]
@@ -29,16 +29,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Review the provided diff that adds a user-search endpoint. Deliver a structured review.",
-      "expected_output": "A multi-axis review with severity-labelled findings and file:line references",
+      "prompt": "评审提供的、新增用户搜索端点的 diff，并输出结构化的评审意见。",
+      "expected_output": "一份多维度评审，包含带严重程度标签的发现和 file:line 引用",
       "files": [
         "code-review-and-quality"
       ],
       "expectations": [
-        "Findings cover more than one axis (correctness, readability, architecture, security, performance)",
-        "Every finding carries a severity label from the skill's taxonomy",
-        "Security of user input is explicitly considered for the new endpoint",
-        "The review leads with high-leverage findings rather than nits"
+        "发现应覆盖多个维度（正确性、可读性、架构、安全、性能）",
+        "每个发现都应带有该技能分类体系中的严重程度标签",
+        "新端点必须显式考虑用户输入的安全性",
+        "评审应优先突出高杠杆的发现，而非细枝末节"
       ]
     }
   ]

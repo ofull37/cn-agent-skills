@@ -3,39 +3,39 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "This change touches production auth, cross-examine every assumption before we proceed",
+        "prompt": "这个改动涉及生产环境的认证，在继续之前请盘问每一个假设",
         "top_k": 3
       },
       {
-        "prompt": "I am not confident in this approach, adversarially review my reasoning in a fresh context",
+        "prompt": "我对这个方法没有把握，请在全新上下文中对抗式地审查我的推理",
         "top_k": 3
       },
       {
-        "prompt": "High-stakes migration tomorrow, stress the plan for hidden failure modes",
+        "prompt": "明天有一场高风险的迁移，请针对隐藏的失败模式对计划做压力测试",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Format this file with prettier"
+        "prompt": "用 prettier 格式化这个文件"
       },
       {
-        "prompt": "Write the changelog entry for the release"
+        "prompt": "为这次发布编写 changelog 条目"
       }
     ]
   },
   "evals": [
     {
       "id": 1,
-      "prompt": "Before running an irreversible data migration, subject the migration plan to adversarial review.",
-      "expected_output": "Claims extracted, doubts raised against each, reconciliation, and a go or stop verdict",
+      "prompt": "在运行不可逆的数据迁移之前，对迁移计划进行对抗式审查。",
+      "expected_output": "提取论断、针对每个论断提出质疑、进行对账，并给出继续或停止的裁决",
       "files": [
         "doubt-driven-development"
       ],
       "expectations": [
-        "Non-trivial claims in the plan are extracted and challenged individually",
-        "At least one assumption is tested rather than accepted",
-        "The verdict distinguishes verified claims from surviving doubts"
+        "计划中非平凡的论断应被逐一提取并质疑",
+        "至少有一个假设应被检验而不是被直接接受",
+        "裁决应区分已证实的论断与仍存疑的点"
       ]
     }
   ]

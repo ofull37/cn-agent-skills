@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Verify against the official Next.js docs before implementing this",
+        "prompt": "在实现这个之前，先对照官方 Next.js 文档进行核验",
         "top_k": 3
       },
       {
-        "prompt": "I want source-cited code for the new Stripe integration",
+        "prompt": "我希望新的 Stripe 集成的代码带有来源引用",
         "top_k": 3
       },
       {
-        "prompt": "Ground every framework decision in the official documentation",
+        "prompt": "把每个框架决策都建立在官方文档的基础上",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Fix the flaky test in CI",
+        "prompt": "修复 CI 中不稳定的测试",
         "owner": "ci-cd-and-automation"
       },
       {
-        "prompt": "Break the spec into ordered tasks",
+        "prompt": "把 spec 拆分成有序的任务",
         "owner": "planning-and-task-breakdown"
       }
     ]
@@ -29,15 +29,15 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Implement session handling with the framework's recommended approach, citing sources.",
-      "expected_output": "An implementation grounded in official documentation with citations, flagging anything unverified",
+      "prompt": "用框架推荐的方式实现会话处理，并引用来源。",
+      "expected_output": "一个以官方文档为基础并带有引用的实现，同时标记所有未经验证的内容",
       "files": [
         "source-driven-development"
       ],
       "expectations": [
-        "Claims about framework behavior cite official documentation",
-        "Unverified assumptions are flagged rather than presented as fact",
-        "Deprecated patterns are avoided in favor of documented current ones"
+        "关于框架行为的论断应引用官方文档",
+        "未经验证的假设应被标记出来，而不是作为事实呈现",
+        "应避免已弃用的模式，改用文档记载的现行模式"
       ]
     }
   ]

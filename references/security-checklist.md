@@ -1,70 +1,70 @@
-# Security Checklist
+# 安全检查清单
 
-Quick reference for web application security. Use alongside the `security-and-hardening` skill.
+Web 应用安全的快速参考。与 `security-and-hardening` 技能配合使用。
 
-## Table of Contents
+## 目录
 
-- [Threat Modeling (Start Here)](#threat-modeling-start-here)
-- [Pre-Commit Checks](#pre-commit-checks)
-- [Authentication](#authentication)
-- [Authorization](#authorization)
-- [Input Validation](#input-validation)
-- [Security Headers](#security-headers)
-- [CORS Configuration](#cors-configuration)
-- [Data Protection](#data-protection)
-- [Dependency Security](#dependency-security)
-- [AI / LLM Security](#ai--llm-security)
-- [Error Handling](#error-handling)
-- [OWASP Top 10 Quick Reference](#owasp-top-10-quick-reference)
-- [OWASP Top 10 for LLMs Quick Reference](#owasp-top-10-for-llms-quick-reference)
+- [威胁建模（从这里开始）](#threat-modeling-start-here)
+- [提交前检查](#pre-commit-checks)
+- [认证](#authentication)
+- [授权](#authorization)
+- [输入验证](#input-validation)
+- [安全响应头](#security-headers)
+- [CORS 配置](#cors-configuration)
+- [数据保护](#data-protection)
+- [依赖安全](#dependency-security)
+- [AI / LLM 安全](#ai--llm-security)
+- [错误处理](#error-handling)
+- [OWASP Top 10 快速参考](#owasp-top-10-quick-reference)
+- [OWASP Top 10 for LLMs 快速参考](#owasp-top-10-for-llms-quick-reference)
 
-## Threat Modeling (Start Here)
+## 威胁建模（从这里开始）
 
-Before reaching for controls, spend five minutes thinking like an attacker:
+在考虑控制措施之前，花五分钟像攻击者一样思考：
 
-- [ ] Trust boundaries mapped (requests, uploads, webhooks, third-party APIs, LLM output)
-- [ ] Assets named (credentials, PII, payment data, admin actions, money movement)
-- [ ] STRIDE run per boundary (Spoofing, Tampering, Repudiation, Info disclosure, DoS, Elevation)
-- [ ] Abuse cases written next to use cases ("how would I misuse this?")
+- [ ] 已映射信任边界（请求、上传、webhook、第三方 API、LLM 输出）
+- [ ] 已点名资产（凭据、PII、支付数据、管理操作、资金流转）
+- [ ] 对每个边界运行 STRIDE（欺骗、篡改、否认、信息泄露、DoS、权限提升）
+- [ ] 在用例旁边写出滥用用例（「我会如何滥用它？」）
 
-## Pre-Commit Checks
+## 提交前检查
 
-- [ ] No secrets in code (`git diff --cached | grep -i "password\|secret\|api_key\|token"`)
-- [ ] `.gitignore` covers: `.env`, `.env.local`, `*.pem`, `*.key`
-- [ ] `.env.example` uses placeholder values (not real secrets)
+- [ ] 代码中没有机密信息（`git diff --cached | grep -i "password\|secret\|api_key\|token"`）
+- [ ] `.gitignore` 覆盖：`.env`、`.env.local`、`*.pem`、`*.key`
+- [ ] `.env.example` 使用占位值（而非真实机密信息）
 
-## Authentication
+## 认证
 
-- [ ] Passwords hashed with bcrypt (≥12 rounds), scrypt, or argon2
-- [ ] Session cookies: `httpOnly`, `secure`, `sameSite: 'lax'`
-- [ ] Session expiration configured (reasonable max-age)
-- [ ] Rate limiting on login endpoint (≤10 attempts per 15 minutes)
-- [ ] Password reset tokens: time-limited (≤1 hour), single-use
-- [ ] Account lockout after repeated failures (optional, with notification)
-- [ ] MFA supported for sensitive operations (optional but recommended)
+- [ ] 密码使用 bcrypt（≥12 轮）、scrypt 或 argon2 哈希
+- [ ] 会话 cookie：`httpOnly`、`secure`、`sameSite: 'lax'`
+- [ ] 已配置会话过期（合理的 max-age）
+- [ ] 登录端点有速率限制（每 15 分钟 ≤10 次尝试）
+- [ ] 密码重置令牌：限时（≤1 小时）、一次性使用
+- [ ] 多次失败后账户锁定（可选，并附通知）
+- [ ] 敏感操作支持 MFA（可选但推荐）
 
-## Authorization
+## 授权
 
-- [ ] Every protected endpoint checks authentication
-- [ ] Every resource access checks ownership/role (prevents IDOR)
-- [ ] Admin endpoints require admin role verification
-- [ ] API keys scoped to minimum necessary permissions
-- [ ] JWT tokens validated (signature, expiration, issuer)
+- [ ] 每个受保护端点都检查认证
+- [ ] 每次资源访问都检查所有权/角色（防止 IDOR）
+- [ ] 管理端点要求验证管理员角色
+- [ ] API 密钥范围限定为最低必要权限
+- [ ] JWT 令牌已验证（签名、过期时间、签发者）
 
-## Input Validation
+## 输入验证
 
-- [ ] All user input validated at system boundaries (API routes, form handlers)
-- [ ] Validation uses allowlists (not denylists)
-- [ ] String lengths constrained (min/max)
-- [ ] Numeric ranges validated
-- [ ] Email, URL, and date formats validated with proper libraries
-- [ ] File uploads: type restricted, size limited, content verified
-- [ ] SQL queries parameterized (no string concatenation)
-- [ ] HTML output encoded (use framework auto-escaping)
-- [ ] URLs validated before redirect (prevent open redirect)
-- [ ] Server-side URL fetches allowlisted; private/reserved IPs blocked (prevent SSRF)
+- [ ] 所有用户输入都在系统边界得到验证（API 路由、表单处理器）
+- [ ] 验证使用允许列表（而非拒绝列表）
+- [ ] 字符串长度受约束（最小/最大）
+- [ ] 数值范围已验证
+- [ ] 使用合适的库验证邮箱、URL 和日期格式
+- [ ] 文件上传：类型受限、大小受限、内容已验证
+- [ ] SQL 查询参数化（不使用字符串拼接）
+- [ ] HTML 输出已编码（使用框架的自动转义）
+- [ ] 重定向前验证 URL（防止开放重定向）
+- [ ] 服务端 URL 请求列入允许列表；阻止私有/保留 IP（防止 SSRF）
 
-## Security Headers
+## 安全响应头
 
 ```
 Content-Security-Policy: default-src 'self'; script-src 'self'
@@ -76,7 +76,7 @@ Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
 ```
 
-## CORS Configuration
+## CORS 配置
 
 ```typescript
 // Restrictive (recommended)
@@ -91,72 +91,72 @@ cors({
 cors({ origin: '*' })  // Allows any origin
 ```
 
-## Data Protection
+## 数据保护
 
-- [ ] Sensitive fields excluded from API responses (`passwordHash`, `resetToken`, etc.)
-- [ ] Sensitive data not logged (passwords, tokens, full CC numbers)
-- [ ] PII encrypted at rest (if required by regulation)
-- [ ] HTTPS for all external communication
-- [ ] Database backups encrypted
+- [ ] 敏感字段从 API 响应中排除（`passwordHash`、`resetToken` 等）
+- [ ] 敏感数据不被记录（密码、令牌、完整信用卡号）
+- [ ] PII 静态加密（如法规要求）
+- [ ] 所有外部通信使用 HTTPS
+- [ ] 数据库备份加密
 
-## Dependency Security
+## 依赖安全
 
-First locate the **installation boundary**. If the package is matched by a parent `workspaces` declaration, use that workspace root; otherwise use the nearest project root that owns both its manifest and dependency graph. At that boundary, corroborate `packageManager` (when present), the lockfile, and CI commands. Stop if they disagree or competing manager lockfiles exist there. A nested project is independent only when it is outside the parent workspace; independent subprojects may legitimately use different managers.
+首先定位**安装边界**。如果该包被某个父级 `workspaces` 声明匹配，使用该 workspace 根；否则使用同时拥有其清单和依赖图、且最近的项目的根。在该边界，核实 `packageManager`（如存在）、lockfile 和 CI 命令。如果它们不一致或该处存在相互竞争的 manager lockfile，则停下来。只有当一个嵌套项目位于父 workspace 之外时它才是独立的；独立子项目可以合理地使用不同的 manager。
 
-| Manager/version signal | Frozen/immutable CI install | Known-advisory audit |
+| Manager/版本信号 | 冻结/不可变 CI 安装 | 已知漏洞审计 |
 |---|---|---|
-| npm (`package-lock.json` or `npm-shrinkwrap.json`) | `npm ci` | `npm audit` |
+| npm（`package-lock.json` 或 `npm-shrinkwrap.json`） | `npm ci` | `npm audit` |
 | pnpm | `pnpm install --frozen-lockfile` | `pnpm audit` |
 | Yarn 2+ | `yarn install --immutable` | `yarn npm audit -A -R` |
 | Yarn 1 | `yarn install --frozen-lockfile` | `yarn audit` |
 
-For an unlisted manager or version, consult its official documentation; do not substitute another manager's commands or newer defaults.
+对于未列出的 manager 或版本，请查阅其官方文档；不要用另一个 manager 的命令或更新的默认值来替代。
 
-### Install-Script Gate
+### 安装脚本关卡
 
-Never discover dependency lifecycle scripts by first executing an ordinary install on a client whose defaults have not been verified.
+绝不要通过首先在默认值未经核实的客户端上执行普通安装，来发现依赖的生命周期脚本。
 
-1. Bootstrap with dependency scripts disabled, or with a documented default-deny policy plus fail-closed enforcement.
-2. Inspect the exact script source and package version before approval.
-3. Record the narrowest native allow/deny policy at the installation boundary and commit it.
-4. Run a clean frozen/immutable install with that policy and verify the required packages still build.
+1. 在禁用依赖脚本的情况下引导，或采用文档化的默认拒绝策略并强制执行失败即关闭。
+2. 在批准之前检查确切的脚本源码和包版本。
+3. 在安装边界记录最窄的原生允许/拒绝策略并提交它。
+4. 使用该策略运行一次干净的冻结/不可变安装，并验证所需包仍然能构建。
 
-**Point-in-time snapshot:** Package-manager defaults and command names change quickly. Verify this matrix against the pinned client's current official documentation before relying on it.
+**时点快照：** 包管理器默认值和命令名变化很快。在依赖本矩阵之前，请对照所固定客户端的当前官方文档进行核实。
 
-| Manager version | Native policy |
+| Manager 版本 | 原生策略 |
 |---|---|
-| npm without verified granular approvals | Bootstrap with `npm ci --ignore-scripts`, or persist `ignore-scripts=true` when project-wide blocking is intended. Keep scripts disabled or deliberately upgrade before allowing any reviewed dependency script. |
-| npm 11.18.x (verified on 11.18.0) | Unreviewed dependency scripts run with a warning by default. Enforce `strict-allow-scripts=true` before a normal install, then use the workspace-unaware `npm install-scripts ls` from the installation boundary; keep approvals version-pinned and denials name-wide. |
-| npm 12.x (verified on 12.0.1) | Unreviewed dependency scripts are skipped by default; `strict-allow-scripts=true` makes their presence fail the install before execution. Use the same `npm install-scripts` review and approval flow. |
-| pnpm 11+ | Use `pnpm approve-builds` and commit `allowBuilds` decisions; `strictDepBuilds` defaults to `true`, so unreviewed builds fail. |
-| pnpm 10.26–10.x | Configure `allowBuilds` explicitly, or use `pnpm approve-builds` with the legacy `onlyBuiltDependencies` / `ignoredBuiltDependencies` lists. Set `strictDepBuilds: true`; its v10 default is `false`. |
-| pnpm 10.1–10.25 | `pnpm approve-builds` records the legacy lists; enable `strictDepBuilds` where supported (10.3+). |
-| Older or unknown pnpm | Bootstrap with `pnpm install --frozen-lockfile --ignore-scripts`. Keep scripts disabled unless the pinned version documents an enforceable policy. |
-| Yarn 4.14+ | Dependency postinstalls are disabled by default. Grant only required exceptions with top-level `dependenciesMeta.<package>.built: true`. |
-| Yarn 2–4.13 | Set `enableScripts: false` in `.yarnrc.yml`, then grant only required exceptions with top-level `dependenciesMeta.<package>.built: true`; do not enable scripts globally. |
-| Yarn 1 | Bootstrap with `yarn install --ignore-scripts`; keep scripts disabled unless each required exception is reviewed under the pinned client's documented workflow. |
+| 未经核实细粒度批准的 npm | 使用 `npm ci --ignore-scripts` 引导，或在打算全项目阻止时持久化 `ignore-scripts=true`。保持脚本禁用，或在允许任何经过评审的依赖脚本之前刻意升级。 |
+| npm 11.18.x（在 11.18.0 上验证） | 未经评审的依赖脚本默认带警告运行。在正常安装前强制执行 `strict-allow-scripts=true`，然后从安装边界使用不感知 workspace 的 `npm install-scripts ls`；批准保持版本锁定，拒绝按名称全局生效。 |
+| npm 12.x（在 12.0.1 上验证） | 未经评审的依赖脚本默认被跳过；`strict-allow-scripts=true` 使它们的存在在执行前就让安装失败。使用同样的 `npm install-scripts` 评审与批准流程。 |
+| pnpm 11+ | 使用 `pnpm approve-builds` 并提交 `allowBuilds` 决策；`strictDepBuilds` 默认为 `true`，因此未评审的构建会失败。 |
+| pnpm 10.26–10.x | 显式配置 `allowBuilds`，或使用 `pnpm approve-builds` 配合传统的 `onlyBuiltDependencies` / `ignoredBuiltDependencies` 列表。设置 `strictDepBuilds: true`；其 v10 默认值为 `false`。 |
+| pnpm 10.1–10.25 | `pnpm approve-builds` 记录传统列表；在支持的地方（10.3+）启用 `strictDepBuilds`。 |
+| 较旧或未知的 pnpm | 使用 `pnpm install --frozen-lockfile --ignore-scripts` 引导。保持脚本禁用，除非固定版本记录了可执行的策略。 |
+| Yarn 4.14+ | 依赖 postinstall 默认禁用。仅通过顶层 `dependenciesMeta.<package>.built: true` 授予所需例外。 |
+| Yarn 2–4.13 | 在 `.yarnrc.yml` 中设置 `enableScripts: false`，然后仅通过顶层 `dependenciesMeta.<package>.built: true` 授予所需例外；不要全局启用脚本。 |
+| Yarn 1 | 使用 `yarn install --ignore-scripts` 引导；保持脚本禁用，除非每个所需例外都在所固定客户端的文档化工作流下经过评审。 |
 
-Authoritative checks: [npm install-scripts](https://docs.npmjs.com/cli/v11/commands/npm-install-scripts/), [install policy](https://docs.npmjs.com/cli/v11/commands/npm-install/), and [CLI releases](https://github.com/npm/cli/releases); [pnpm approve-builds](https://pnpm.io/cli/approve-builds) and [build settings](https://pnpm.io/settings#allowbuilds); [Yarn security](https://yarnpkg.com/features/security) and [manifest](https://yarnpkg.com/configuration/manifest#dependenciesMeta).
+权威检查：[npm install-scripts](https://docs.npmjs.com/cli/v11/commands/npm-install-scripts/)、[install policy](https://docs.npmjs.com/cli/v11/commands/npm-install/) 和 [CLI releases](https://github.com/npm/cli/releases)；[pnpm approve-builds](https://pnpm.io/cli/approve-builds) 和 [build settings](https://pnpm.io/settings#allowbuilds)；[Yarn security](https://yarnpkg.com/features/security) 和 [manifest](https://yarnpkg.com/configuration/manifest#dependenciesMeta)。
 
-**Supply-chain hygiene** (advisory audits do not catch newly malicious packages):
-- [ ] Exactly one authoritative lockfile per project/workspace root is committed and CI never rewrites it
-- [ ] Critical/high findings are triaged for reachability; deferrals have a reason and review date
-- [ ] Forced audit remediation (`npm audit fix --force` or equivalent) is never automatic; remediation diffs and changelogs are reviewed
-- [ ] Registry signatures/provenance are verified where the manager supports it
-- [ ] Dependency lifecycle scripts are blocked before first execution and approved only through the pinned manager's native policy
-- [ ] New dependencies are reviewed for ownership, maintenance, release age, provenance, transitive graph, and typosquatting
+**供应链卫生**（漏洞审计无法捕获新出现的恶意包）：
+- [ ] 每个项目/workspace 根只提交一个权威 lockfile，且 CI 永不重写它
+- [ ] 严重/高危发现已按可达性分类处理；延期有理由和评审日期
+- [ ] 强制的审计修复（`npm audit fix --force` 或等价物）永不自动执行；修复 diff 和变更日志经过评审
+- [ ] 在 manager 支持的情况下，验证注册表签名/来源证明
+- [ ] 依赖生命周期脚本在首次执行前被阻止，且只能通过所固定 manager 的原生策略批准
+- [ ] 新依赖就所有权、维护情况、发布年龄、来源证明、传递依赖图和 typosquatting 进行评审
 
-## AI / LLM Security
+## AI / LLM 安全
 
-For any feature that calls an LLM (chatbots, summarizers, agents, RAG):
+对于任何调用 LLM 的功能（聊天机器人、摘要器、agent、RAG）：
 
-- [ ] Model output treated as untrusted — never into `eval`/SQL/shell/`innerHTML`/file paths
-- [ ] Prompt injection assumed; permissions enforced in code, not in the system prompt
-- [ ] Secrets, cross-tenant data, and full system prompts kept out of the context window
-- [ ] Tool/agent permissions scoped; destructive or irreversible actions require confirmation
-- [ ] Token, rate, and recursion/loop limits set (bound consumption)
+- [ ] 模型输出被视为不受信任——绝不进入 `eval`/SQL/shell/`innerHTML`/文件路径
+- [ ] 假定存在提示注入；权限在代码中强制执行，而非在系统提示中
+- [ ] 机密信息、跨租户数据和完整系统提示保持在上下文窗口之外
+- [ ] 工具/agent 权限做了范围限制；破坏性或不可逆操作要求确认
+- [ ] 设置 token、速率和递归/循环限制（约束消耗）
 
-## Error Handling
+## 错误处理
 
 ```typescript
 // Production: generic error, no internals
@@ -172,34 +172,34 @@ res.status(500).json({
 });
 ```
 
-## OWASP Top 10 Quick Reference
+## OWASP Top 10 快速参考
 
-| # | Vulnerability | Prevention |
+| # | 漏洞 | 预防 |
 |---|---|---|
-| 1 | Broken Access Control | Auth checks on every endpoint, ownership verification |
-| 2 | Cryptographic Failures | HTTPS, strong hashing, no secrets in code |
-| 3 | Injection | Parameterized queries, input validation |
-| 4 | Insecure Design | Threat modeling, spec-driven development |
-| 5 | Security Misconfiguration | Security headers, minimal permissions, audit deps |
-| 6 | Vulnerable Components | The ecosystem's dependency audit (`npm audit`, `pip-audit`, ...), keep deps updated, minimal deps |
-| 7 | Auth Failures | Strong passwords, rate limiting, session management |
-| 8 | Data Integrity Failures | Verify updates/dependencies, signed artifacts |
-| 9 | Logging Failures | Log security events, don't log secrets |
-| 10 | SSRF | Validate/allowlist URLs, restrict outbound requests |
+| 1 | 访问控制失效 | 每个端点做认证检查、所有权验证 |
+| 2 | 加密失败 | HTTPS、强哈希、代码中无机密信息 |
+| 3 | 注入 | 参数化查询、输入验证 |
+| 4 | 不安全的设计 | 威胁建模、spec 驱动的开发 |
+| 5 | 安全配置错误 | 安全响应头、最小权限、审计依赖 |
+| 6 | 易受攻击的组件 | 生态系统的依赖审计（`npm audit`、`pip-audit`……）、保持依赖更新、最小化依赖 |
+| 7 | 认证失败 | 强密码、速率限制、会话管理 |
+| 8 | 数据完整性失效 | 验证更新/依赖、签名产物 |
+| 9 | 日志失败 | 记录安全事件，不记录机密信息 |
+| 10 | SSRF | 验证/允许列表 URL、限制出站请求 |
 
-## OWASP Top 10 for LLMs Quick Reference
+## OWASP Top 10 for LLMs 快速参考
 
-For apps with LLM features. See the [OWASP GenAI Security Project](https://genai.owasp.org/llm-top-10/).
+适用于带 LLM 功能的应用。参见 [OWASP GenAI Security Project](https://genai.owasp.org/llm-top-10/)。
 
-| ID | Risk | Prevention |
+| ID | 风险 | 预防 |
 |---|---|---|
-| LLM01 | Prompt Injection | Don't trust the system prompt as a boundary; enforce permissions in code |
-| LLM02 | Sensitive Information Disclosure | Keep secrets/PII out of prompts; filter outputs |
-| LLM03 | Supply Chain | Vet models, datasets, and plugins like any dependency |
-| LLM04 | Data and Model Poisoning | Use trusted model sources, verify integrity; vet fine-tuning and RAG data |
-| LLM05 | Improper Output Handling | Treat model output as untrusted; validate, parameterize, encode |
-| LLM06 | Excessive Agency | Scope tool permissions; confirm destructive actions |
-| LLM07 | System Prompt Leakage | Assume the system prompt can leak; put no secrets in it |
-| LLM08 | Vector and Embedding Weaknesses | Partition RAG embeddings per tenant; validate documents before indexing |
-| LLM09 | Misinformation | Ground answers with citations; validate critical claims; keep a human in the loop |
-| LLM10 | Unbounded Consumption | Cap tokens, request rate, and loop/recursion depth |
+| LLM01 | 提示注入 | 不要把系统提示当作边界；在代码中强制执行权限 |
+| LLM02 | 敏感信息泄露 | 让机密信息/PII 远离提示；过滤输出 |
+| LLM03 | 供应链 | 像审查任何依赖一样审查模型、数据集和插件 |
+| LLM04 | 数据与模型投毒 | 使用可信模型来源、验证完整性；审查微调和 RAG 数据 |
+| LLM05 | 输出处理不当 | 将模型输出视为不受信任；验证、参数化、编码 |
+| LLM06 | 过度自主 | 限定工具权限；确认破坏性操作 |
+| LLM07 | 系统提示泄露 | 假定系统提示可能泄露；其中不放任何机密信息 |
+| LLM08 | 向量与嵌入弱点 | 按租户分区 RAG 嵌入；索引前验证文档 |
+| LLM09 | 错误信息 | 用引用支撑答案；验证关键论断；保持人在回路中 |
+| LLM10 | 无界消耗 | 限制 token、请求速率和循环/递归深度 |

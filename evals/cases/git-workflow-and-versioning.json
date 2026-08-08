@@ -3,24 +3,24 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Split this messy working tree into clean atomic commits",
+        "prompt": "把这个混乱的工作区拆分成干净的原子提交",
         "top_k": 3
       },
       {
-        "prompt": "Resolve the merge conflict on this feature branch",
+        "prompt": "解决这个功能分支上的合并冲突",
         "top_k": 3
       },
       {
-        "prompt": "How should we tag and version this release?",
+        "prompt": "我们应该如何为这次发布打标签和定版本？",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "Add a loading spinner to the submit button"
+        "prompt": "为提交按钮添加加载动画"
       },
       {
-        "prompt": "Write integration tests for the payments API",
+        "prompt": "为支付 API 编写集成测试",
         "owner": "test-driven-development"
       }
     ]
@@ -28,15 +28,15 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "The working tree mixes a refactor, a bug fix, and a new feature. Turn it into a clean history.",
-      "expected_output": "Separate atomic commits with clear messages, each independently green",
+      "prompt": "工作区里混着重构、bug 修复和新功能。请把它整理成干净的提交历史。",
+      "expected_output": "彼此独立的原子提交，消息清晰，每个提交单独通过",
       "files": [
         "git-workflow-and-versioning"
       ],
       "expectations": [
-        "Refactor, fix, and feature land as separate commits",
-        "Commit messages are imperative and standalone",
-        "Each commit leaves the tree in a working state"
+        "重构、修复和功能应作为各自独立的提交落地",
+        "提交消息应采用祈使句且可独立理解",
+        "每个提交都应让工作区处于可用状态"
       ]
     }
   ]

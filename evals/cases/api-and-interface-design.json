@@ -3,25 +3,25 @@
   "trigger": {
     "positive": [
       {
-        "prompt": "Design a REST endpoint for creating invoices, including error responses and versioning",
+        "prompt": "设计一个用于创建发票的 REST 端点，包含错误响应和版本控制",
         "top_k": 3
       },
       {
-        "prompt": "What should the public interface of this payments module expose to other teams?",
+        "prompt": "这个支付模块的公共接口应该向其他团队暴露什么？",
         "top_k": 3
       },
       {
-        "prompt": "Help me define the contract between the frontend and the orders service",
+        "prompt": "帮我定义前端与订单服务之间的契约",
         "top_k": 3
       }
     ],
     "negative": [
       {
-        "prompt": "My unit test is failing with a null pointer exception",
+        "prompt": "我的单元测试因空指针异常而失败",
         "owner": "debugging-and-error-recovery"
       },
       {
-        "prompt": "Make this landing page responsive on mobile",
+        "prompt": "让这个落地页在移动端自适应",
         "owner": "frontend-ui-engineering"
       }
     ]
@@ -29,16 +29,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Design the public API for a URL-shortening service: create, resolve, stats. Produce the endpoint contracts.",
-      "expected_output": "Endpoint contracts with methods, paths, request/response shapes, and explicit error semantics",
+      "prompt": "为一个 URL 短链接服务设计公共 API：创建、解析、统计。产出端点契约。",
+      "expected_output": "包含方法、路径、请求/响应结构和明确错误语义的端点契约",
       "files": [
         "api-and-interface-design"
       ],
       "expectations": [
-        "Error responses are specified with status codes and a consistent error shape, not just happy paths",
-        "Input validation at the boundary is addressed for user-supplied URLs",
-        "Versioning or compatibility strategy is stated",
-        "The response does not silently invent unstated requirements"
+        "错误响应须指定状态码和一致的错误结构，而不只是正常路径",
+        "针对用户提供的 URL，边界处的输入校验需要得到处理",
+        "需要说明版本控制或兼容性策略",
+        "响应不得悄悄臆造未说明的需求"
       ]
     }
   ]

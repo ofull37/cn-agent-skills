@@ -1,97 +1,97 @@
-# Contributing to Agent Skills
+# 参与 Agent Skills 贡献
 
-Thanks for your interest in contributing! This project is a collection of production-grade engineering skills for AI coding agents.
+感谢你有兴趣参与贡献！本项目是一个面向 AI 编码智能体的生产级工程技能合集。
 
-New here? [docs/developer-onboarding.md](docs/developer-onboarding.md) is a guided tour of how the repo fits together (the five layers, the verification loop, and the contribution paths) and tells you when to read this document, [skill-anatomy.md](docs/skill-anatomy.md), and [evals/README.md](evals/README.md). This file is the authoritative rulebook; the onboarding guide is the map.
+第一次来？[docs/developer-onboarding.md](docs/developer-onboarding.md) 是一份导览，介绍仓库如何组织（五个层次、验证循环和贡献路径），并告诉你在什么时候阅读本文档、[skill-anatomy.md](docs/skill-anatomy.md) 和 [evals/README.md](evals/README.md)。本文件是权威规则手册；上手指南是地图。
 
-## Adding a New Skill
+## 添加新技能
 
-### Before proposing a new skill
+### 提出新技能之前
 
-This pack already covers most of the development lifecycle, and many proposals overlap with an existing skill or another open PR. Before opening one, do these checks so reviewers aren't triaging duplicates:
+这个技能包已经覆盖了大部分开发生命周期，许多提案会与现有技能或另一个开放 PR 重叠。在提交提案之前，请完成以下检查，避免评审者去分拣重复项：
 
-1. **Search the catalog.** Browse [the skill list in the README](README.md) and skim `skills/` for an existing skill that covers your idea, whole or in part.
-2. **Check open PRs.** Run `gh pr list --state open` (or browse the PRs tab) and look for proposals on the same topic. Clusters of near-duplicate skills already exist; don't add to them.
-3. **Read the anatomy.** Confirm your idea fits the format in [docs/skill-anatomy.md](docs/skill-anatomy.md), an actionable workflow with verification, not vague advice.
-4. **Justify the gap in your PR description.** State explicitly why this isn't covered by an existing skill or open PR. If it overlaps, propose extending the existing skill instead of adding a new one.
+1. **搜索目录。**浏览 [README 中的技能列表](README.md)，并翻阅 `skills/`，看看是否已有技能完整或部分覆盖你的想法。
+2. **检查开放的 PR。**运行 `gh pr list --state open`（或浏览 PRs 标签页），查找同一主题的提案。已经存在一些近乎重复的技能；不要再增加它们。
+3. **阅读结构规范。**确认你的想法符合 [docs/skill-anatomy.md](docs/skill-anatomy.md) 中的格式——带验证的可执行工作流，而非泛泛而谈的建议。
+4. **在 PR 描述中说明该空白的必要性。**明确指出为什么现有技能或开放 PR 没有覆盖这个需求。如果有重叠，建议扩展现有技能，而不是添加新技能。
 
-If your idea is a refinement of an existing skill, prefer a focused edit to that skill over a new directory.
+如果你的想法是对现有技能的完善，优先对该技能做一次聚焦的修改，而不是新建目录。
 
-### Creating the skill
+### 创建技能
 
-1. Create a directory under `skills/` with a kebab-case name
-2. Add a `SKILL.md` following the format in [docs/skill-anatomy.md](docs/skill-anatomy.md)
-3. Include YAML frontmatter with `name` and `description` fields
-4. Ensure the `description` starts with what the skill does (third person), then includes one or more `Use when` trigger conditions
+1. 在 `skills/` 下创建一个使用 kebab-case 命名的目录
+2. 按照 [docs/skill-anatomy.md](docs/skill-anatomy.md) 中的格式添加 `SKILL.md`
+3. 包含带 `name` 和 `description` 字段的 YAML frontmatter
+4. 确保 `description` 以技能的功能开头（第三人称），然后包含一个或多个 `Use when` 触发条件
 
-### Skill Quality Bar
+### 技能质量门槛
 
-Skills should be:
+技能应当：
 
-- **Specific** — Actionable steps, not vague advice
-- **Verifiable** — Clear exit criteria with evidence requirements
-- **Battle-tested** — Based on real engineering workflows, not theoretical ideals
-- **Minimal** — Only the content needed to guide the agent correctly
+- **具体（Specific）**——可操作的步骤，而非泛泛而谈的建议
+- **可验证（Verifiable）**——带有证据要求的明确退出标准
+- **久经考验（Battle-tested）**——基于真实工程工作流，而非理论理想
+- **最小化（Minimal）**——只包含正确引导 agent 所需的内容
 
-### Structure
+### 结构
 
-Every new skill must have:
+每个新技能必须具备：
 
-- `SKILL.md` in the skill directory
-- YAML frontmatter with valid `name` and `description`
-- An eval case file at `evals/cases/<skill-name>.json` — at least 3 positive triggers, 2 negative triggers (with `owner` where possible), and 1 behavioral eval. Execution evals must be backed by real files under `evals/fixtures/`; conversation-shaped skills may use a reviewer-gated `kind: "dialogue"` eval instead (see [evals/README.md](evals/README.md)). CI enforces these requirements.
+- 技能目录下的 `SKILL.md`
+- 包含有效的 `name` 和 `description` 的 YAML frontmatter
+- `evals/cases/<skill-name>.json` 位置的评测用例文件——至少 3 个正向触发、2 个负向触发（尽可能带 `owner`），以及 1 个行为评测。执行评测必须以 `evals/fixtures/` 下的真实文件为支撑；对话型技能可以使用经评审把关的 `kind: "dialogue"` 评测代替（见 [evals/README.md](evals/README.md)）。CI 会强制执行这些要求。
 
-New skills should generally follow the standard anatomy:
+新技能一般应遵循标准结构：
 
-- **Overview** — What this skill does and why it matters
-- **When to Use** — Triggering conditions
-- **Process** — Step-by-step workflow
-- **Common Rationalizations** — Excuses agents use to skip steps, with rebuttals
-- **Red Flags** — Warning signs that the skill is being applied incorrectly
-- **Verification** — How to confirm the skill was applied correctly
+- **概述（Overview）**——该技能做什么以及为什么重要
+- **何时使用（When to Use）**——触发条件
+- **流程（Process）**——分步工作流
+- **常见合理化借口（Common Rationalizations）**——agent 用来跳过步骤的借口及反驳
+- **危险信号（Red Flags）**——技能被错误应用的警告信号
+- **验证（Verification）**——如何确认技能被正确应用
 
-The frontmatter fields above are required. The section anatomy is a recommended pattern: equivalent headings such as `How It Works`, `Workflow`, or `Core Process` are fine when they preserve the same intent and keep the skill easy to follow.
+上面的 frontmatter 字段是必需的。章节结构是推荐模式：只要保留相同意图并保持技能易于遵循，使用 `How It Works`、`Workflow` 或 `Core Process` 等等效标题也是可以的。
 
-### What Not to Do
+### 不该做什么
 
-- Don't duplicate content between skills — reference other skills instead
-- Don't add skills that are vague advice instead of actionable processes
-- Don't create supporting files unless content exceeds 100 lines
-- Don't create an empty `scripts/` directory just to match another skill — add `scripts/` only when the skill includes runnable helpers
-- Don't put reference material inside skill directories — use `references/` instead
+- 不要在技能之间重复内容——改为引用其他技能
+- 不要添加泛泛而谈的建议而非可执行流程的技能
+- 除非内容超过 100 行，否则不要创建辅助文件
+- 不要仅仅为了与其他技能保持一致就创建空的 `scripts/` 目录——只有在技能包含可运行辅助脚本时才添加 `scripts/`
+- 不要将参考资料放在技能目录内——使用 `references/`
 
-## Modifying Existing Skills
+## 修改现有技能
 
-- Keep changes focused and minimal
-- Preserve the existing structure and tone
-- Test that YAML frontmatter remains valid after edits
+- 保持修改聚焦且最小化
+- 保留现有结构和语气
+- 测试编辑后 YAML frontmatter 仍然有效
 
-## Repo-scoped files
+## 仓库级文件
 
-`AGENTS.md` and `CLAUDE.md` at the repo root configure agents working on the [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) repository itself. When writing setup guides or docs, do not instruct users to copy these files into their own projects or into a global agent configuration; the reusable assets are the skills in `skills/`.
+仓库根目录的 `AGENTS.md` 和 `CLAUDE.md` 用于配置在 [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills) 仓库上工作的 agent。编写设置指南或文档时，不要指示用户将这些文件复制到他们自己的项目或全局 agent 配置中；可复用的资产是 `skills/` 下的技能。
 
-## Translations
+## 翻译
 
-We don't accept translations of the documentation (README, `docs/`) or of skills and their content. Translated copies drift out of sync as skills and docs evolve, and we have no way to maintain them long-term without leaning on agent translations plus community corrections, which adds maintenance cost for limited value. Keep all skills, docs, and contributions in English.
+我们不接受文档（README、`docs/`）或技能及其内容的翻译。随着技能和文档的演进，翻译副本会逐渐失同步，而我们无法长期维护它们——除非依赖 agent 翻译加社区修正，这会增加维护成本而价值有限。请保持所有技能、文档和贡献为英文。
 
-## Testing Hooks
+## 测试钩子
 
-The session-start hook (`hooks/session-start.sh`) injects the `using-agent-skills` meta-skill into every new Claude Code session. A regression test at `hooks/session-start-test.sh` validates the hook's JSON payload — both when `jq` is available and when it isn't.
+会话启动钩子（`hooks/session-start.sh`）会将 `using-agent-skills` 元技能注入每个新的 Claude Code 会话。`hooks/session-start-test.sh` 处的回归测试会验证钩子的 JSON payload——无论 `jq` 是否可用。
 
-Run it before opening any PR that touches:
+在打开任何涉及以下内容的 PR 之前运行它：
 
 - `hooks/session-start.sh`
-- `skills/using-agent-skills/SKILL.md` (the meta-skill content embedded by the hook)
+- `skills/using-agent-skills/SKILL.md`（钩子内嵌的元技能内容）
 
 ```bash
 bash hooks/session-start-test.sh
 ```
 
-Expected output: `session-start JSON payload OK`. The script exits non-zero on any assertion failure.
+预期输出：`session-start JSON payload OK`。脚本在任何断言失败时都会以非零状态退出。
 
-### Reproducing the no-jq fallback
+### 复现无 jq 回退
 
-The hook gracefully degrades to an `INFO`-priority payload when `jq` isn't on `PATH`. To exercise that branch locally, strip `jq`'s directory from `PATH` for the test invocation:
+当 `PATH` 中没有 `jq` 时，钩子会优雅地降级为 `INFO` 优先级的 payload。要在本地演练该分支，可在测试调用时从 `PATH` 中移除 `jq` 的目录：
 
 ```bash
 JQ_DIR=$(dirname "$(command -v jq)")
@@ -99,25 +99,20 @@ PATH=$(echo "$PATH" | tr ':' '\n' | grep -v "^${JQ_DIR}$" | tr '\n' ':' | sed 's
   bash hooks/session-start-test.sh
 ```
 
-This works cleanly when `jq` lives in its own directory (e.g. `/opt/homebrew/bin` from Homebrew, `/usr/local/bin` from a manual install). If your `jq` shares a system bin with other tools the test depends on (such as `mktemp` in `/usr/bin`), the simpler approach is to install `jq` via a separate package manager so it has its own bin directory, then re-run.
+当 `jq` 位于自己的独立目录中时（例如 Homebrew 安装的 `/opt/homebrew/bin`、手动安装的 `/usr/local/bin`），这种方式可以干净地运行。如果你的 `jq` 与测试依赖的其他工具（如 `/usr/bin` 中的 `mktemp`）共用系统 bin 目录，更简单的做法是通过单独的包管理器安装 `jq`，让它拥有自己的 bin 目录，然后重新运行。
 
-The hook's `command -v jq` check fails under the stripped `PATH`, the `INFO`-priority fallback runs, and the test asserts the `jq is required` guidance message instead of the normal payload.
+在移除后的 `PATH` 下，钩子的 `command -v jq` 检查会失败，`INFO` 优先级回退会运行，测试会断言 `jq is required` 提示消息而非正常 payload。
 
-## Reporting Issues
+## 报告问题
 
-Open an issue if you find:
+如果你发现以下情况，请打开一个 issue：
 
-- A skill that gives incorrect or outdated guidance
-- Missing coverage for a common engineering workflow
-- Inconsistencies between skills
+- 技能给出了错误或过时的指导
+- 常见工程工作流缺少覆盖
+- 技能之间存在不一致
 
-If a skill's guidance was wrong, outdated, or did not apply in your project
-(for example, it assumed `npm test` in a Maven or Gradle repo), use the
-[Skill gap](https://github.com/addyosmani/agent-skills/issues/new?template=skill-gap.yml)
-issue form. It asks for the affected skill, the relevant excerpt, your project
-context, and what you did instead — enough for maintainers to triage without a
-freeform write-up.
+如果某个技能的指导有误、过时，或在你的项目中不适用（例如，在 Maven 或 Gradle 仓库中假定使用 `npm test`），请使用 [Skill gap](https://github.com/addyosmani/agent-skills/issues/new?template=skill-gap.yml) issue 表单。它会询问受影响的技能、相关摘录、你的项目背景，以及你实际的做法——这些足以让维护者进行分拣，而无需自由格式的长篇描述。
 
-## License
+## 许可证
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+通过参与贡献，即表示你同意你的贡献将在 MIT 许可证下授权。
