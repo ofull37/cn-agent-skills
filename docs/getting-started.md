@@ -13,7 +13,7 @@ Each skill is a Markdown file (`SKILL.md`) that describes a specific engineering
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ofull37/cn-agents-skills.git
+git clone https://github.com/ofull37/cn-agent-skills.git
 ```
 
 ### 2. Choose a skill

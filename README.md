@@ -45,16 +45,16 @@
 **最快路径——任意 agent，一条命令。** 开源 [skills CLI](https://github.com/vercel-labs/skills) 可安装到 70+ 个 agent（Claude Code、Cursor、Codex、Copilot、Cline 等）：
 
 ```bash
-npx skills add ofull37/cn-agents-skills            # install all 24 skills
-npx skills add ofull37/cn-agents-skills --list     # browse before installing
+npx skills add ofull37/cn-agent-skills            # install all 24 skills
+npx skills add ofull37/cn-agent-skills --list     # browse before installing
 ```
 
 或者单独获取技能：
 
 ```bash
-npx skills add ofull37/cn-agents-skills --skill code-review-and-quality   # five-axis review before merge
-npx skills add ofull37/cn-agents-skills --skill interview-me              # requirements interrogation, one question at a time
-npx skills add ofull37/cn-agents-skills --skill test-driven-development   # red-green-refactor, enforced
+npx skills add ofull37/cn-agent-skills --skill code-review-and-quality   # five-axis review before merge
+npx skills add ofull37/cn-agent-skills --skill interview-me              # requirements interrogation, one question at a time
+npx skills add ofull37/cn-agent-skills --skill test-driven-development   # red-green-refactor, enforced
 ```
 
 > **只安装一个技能？** 按技能执行的 `npx` 安装只会复制
@@ -72,13 +72,13 @@ npx skills add ofull37/cn-agents-skills --skill test-driven-development   # red-
 **市场安装：**
 
 ```
-/plugin marketplace add ofull37/cn-agents-skills
+/plugin marketplace add ofull37/cn-agent-skills
 /plugin install agent-skills@addy-agent-skills
 ```
 
 > **遇到 SSH 错误？** 市场会通过 SSH 克隆仓库。如果你没有在 GitHub 上配置 SSH 密钥，可以[添加 SSH 密钥](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)，或在添加市场这一步使用完整的 HTTPS URL 来强制走 HTTPS 克隆：
 > ```bash
-> /plugin marketplace add https://github.com/ofull37/cn-agents-skills.git
+> /plugin marketplace add https://github.com/ofull37/cn-agent-skills.git
 > /plugin install agent-skills@addy-agent-skills
 > ```
 >
@@ -90,7 +90,7 @@ npx skills add ofull37/cn-agents-skills --skill test-driven-development   # red-
 **本地 / 开发：**
 
 ```bash
-git clone https://github.com/ofull37/cn-agents-skills.git
+git clone https://github.com/ofull37/cn-agent-skills.git
 claude --plugin-dir /path/to/agent-skills
 ```
 
@@ -111,13 +111,13 @@ claude --plugin-dir /path/to/agent-skills
 **从仓库安装：**
 
 ```bash
-agy plugin install https://github.com/ofull37/cn-agents-skills.git
+agy plugin install https://github.com/ofull37/cn-agent-skills.git
 ```
 
 **从本地克隆安装：**
 
 ```bash
-git clone https://github.com/ofull37/cn-agents-skills.git
+git clone https://github.com/ofull37/cn-agent-skills.git
 agy plugin install ./agent-skills
 ```
 
@@ -131,7 +131,7 @@ agy plugin install ./agent-skills
 **从仓库安装：**
 
 ```bash
-gemini skills install https://github.com/ofull37/cn-agents-skills.git --path skills
+gemini skills install https://github.com/ofull37/cn-agent-skills.git --path skills
 ```
 
 **从本地克隆安装：**
@@ -176,7 +176,7 @@ gemini skills install ./agent-skills/skills/
 作为原生 Codex 插件安装（Codex CLI v0.122+）：
 
 ```bash
-codex plugin marketplace add ofull37/cn-agents-skills
+codex plugin marketplace add ofull37/cn-agent-skills
 codex plugin add agent-skills@agent-skills
 ```
 
@@ -190,9 +190,9 @@ codex plugin add agent-skills@agent-skills
 使用内置的 `cmd skills` 命令进行原生安装。Command Code 会克隆仓库、发现每个 `SKILL.md`，并安装到 `.commandcode/skills/`：
 
 ```bash
-cmd skills add ofull37/cn-agents-skills            # pick skills to install (project)
-cmd skills add ofull37/cn-agents-skills --global   # install for all projects (~/.commandcode/skills/)
-cmd skills add ofull37/cn-agents-skills -s spec-driven-development  # install a specific skill
+cmd skills add ofull37/cn-agent-skills            # pick skills to install (project)
+cmd skills add ofull37/cn-agent-skills --global   # install for all projects (~/.commandcode/skills/)
+cmd skills add ofull37/cn-agent-skills -s spec-driven-development  # install a specific skill
 ```
 
 安装后的技能会出现在 TUI 的 slash 菜单中，例如 `/spec-driven-development`。参见 [docs/commandcode-setup.md](docs/commandcode-setup.md)。

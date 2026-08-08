@@ -30,8 +30,8 @@ Note that commands exist in three parallel directories (Claude Code, Gemini CLI,
 ## 2. Local setup
 
 ```bash
-git clone https://github.com/ofull37/cn-agents-skills.git
-cd cn-agents-skills
+git clone https://github.com/ofull37/cn-agent-skills.git
+cd cn-agent-skills
 ```
 
 There's no build step and no `package.json`; validators are plain Node scripts. You need:
