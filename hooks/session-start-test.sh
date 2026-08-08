@@ -25,11 +25,11 @@ if (hasJq) {
     throw new Error(`expected IMPORTANT priority, got ${payload.priority}`);
   }
 
-  if (!payload.message.includes('agent-skills loaded.')) {
+  if (!payload.message.includes('cn-agent-skills loaded.')) {
     throw new Error('message is missing startup preface');
   }
 
-  if (!payload.message.includes('# Using Agent Skills')) {
+  if (!payload.message.includes('# 使用 Agent 技能')) {
     throw new Error('message is missing using-agent-skills content');
   }
 } else {

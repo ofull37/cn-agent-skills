@@ -25,7 +25,7 @@ agy plugin install https://github.com/ofull37/cn-agent-skills.git
    agy plugin install /path/to/agent-skills
    ```
 
-This will validate the plugin and install it into your global Antigravity configuration directory (`~/.gemini/antigravity-cli/plugins/agent-skills/`).
+This will validate the plugin and install it into your global Antigravity configuration directory (`~/.gemini/antigravity-cli/plugins/cn-agent-skills/`).
 
 ### Option 2: Import from Gemini CLI
 
