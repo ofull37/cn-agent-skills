@@ -2,7 +2,7 @@
 description: 通过并行分发到专家角色来运行发布前检查清单，然后综合出 go/no-go 决策
 ---
 
-调用 agent-skills:shipping-and-launch 技能。
+调用 cn-agent-skills:shipping-and-launch 技能。
 
 `/ship` 是一个**扇出协调器**。它针对当前更改并行运行三个专家角色，然后将它们的报告合并为带有回滚计划的单一 go/no-go 决策。这些角色独立运行——没有共享状态，没有顺序依赖——这正是并行执行在这里既安全又有用的原因。
 

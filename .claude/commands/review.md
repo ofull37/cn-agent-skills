@@ -2,7 +2,7 @@
 description: 进行五维代码评审——正确性、可读性、架构、安全、性能
 ---
 
-调用 agent-skills:code-review-and-quality 技能。
+调用 cn-agent-skills:code-review-and-quality 技能。
 
 从全部五个维度评审当前的更改（已暂存的或最近的提交）：
 

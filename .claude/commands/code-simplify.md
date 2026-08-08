@@ -2,7 +2,7 @@
 description: 为清晰度和可维护性简化代码——在不改变行为的前提下降低复杂度
 ---
 
-调用 agent-skills:code-simplification 技能。
+调用 cn-agent-skills:code-simplification 技能。
 
 在保持行为完全不变的前提下，简化最近更改的代码（或指定的范围）：
 

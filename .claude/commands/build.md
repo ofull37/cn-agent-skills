@@ -2,7 +2,7 @@
 description: 增量实现任务——构建、测试、验证、提交。添加 "auto" 可在一轮批准后运行整个计划
 ---
 
-调用 agent-skills:incremental-implementation 技能，同时配合 agent-skills:test-driven-development 技能。
+调用 cn-agent-skills:incremental-implementation 技能，同时配合 cn-agent-skills:test-driven-development 技能。
 
 ## 模式
 
@@ -30,15 +30,15 @@ description: 增量实现任务——构建、测试、验证、提交。添加 
 
 1. **必须有 spec。** 只查找已知路径下的 spec：仓库根目录的 `SPEC.md`、`docs/SPEC.md` 或 `spec/` 目录下的文件。README 或任意文档**不算**。如果不存在，停止并告诉用户先运行 `/spec`——不要凭空编造需求。
 2. **建立干净的基线。** 运行 `git status --porcelain`。如果存在预期计划产物（`SPEC.md`、`docs/SPEC.md`、`spec/*`、`tasks/plan.md`、`tasks/todo.md`）之外的未提交更改，停止并让用户提交、暂存或确认如何处理。自主模式的逐任务提交绝不能吸收无关的本地工作，否则干净回滚的保证就会被破坏。
-3. **如需要则制定计划。** 如果没有 `tasks/plan.md`，调用 agent-skills:planning-and-task-breakdown 技能来生成一份。
+3. **如需要则制定计划。** 如果没有 `tasks/plan.md`，调用 cn-agent-skills:planning-and-task-breakdown 技能来生成一份。
 4. **单一检查点。** 呈现完整计划，等待明确的肯定答复（例如 "approve"、"go"、"yes"）。将含糊的回应（"looks reasonable"、"I guess"）视为**未**批准。这是唯一的人工关口——获得批准后，自主运行。如果你生成了 `tasks/plan.md`，现在就把它作为单个预备提交提交掉，以免混入第一个任务的提交。
 5. **按依赖顺序执行每个任务。** 使用每个任务声明的依赖；如果没有明确声明，就按计划列出的顺序执行。对每个任务运行上述完整的默认循环（RED → GREEN → 回归 → 构建 → 提交 → 标记完成）。只暂存该任务触及的文件及其任务状态更新——绝不盲目 `git add -A`——并且每个任务只提交一次，以便任何时刻都能干净回滚。
 6. **停止并向用户询问**（不要强行推进），当出现以下情况时：
-   - 测试无法通过或构建在无明显修复方法的情况下失败 → 遵循 agent-skills:debugging-and-error-recovery
+   - 测试无法通过或构建在无明显修复方法的情况下失败 → 遵循 cn-agent-skills:debugging-and-error-recovery
    - spec 存在歧义，或某个任务需要 spec 未覆盖的决策
-   - 某个任务高风险或不可逆——认证/权限变更、破坏性数据迁移、支付、删除、部署、任何涉及机密信息的操作，**或任何你无法用 `git revert` 撤销的操作** → 遵循 agent-skills:doubt-driven-development，并在继续之前获得明确签核
+   - 某个任务高风险或不可逆——认证/权限变更、破坏性数据迁移、支付、删除、部署、任何涉及机密信息的操作，**或任何你无法用 `git revert` 撤销的操作** → 遵循 cn-agent-skills:doubt-driven-development，并在继续之前获得明确签核
 
    用户解决阻塞问题后，重新调用 `/build auto`——它将从下一个待处理任务继续。
 7. **最后做总结：** 完成的任务、添加的测试、提交的数量，以及任何跳过、标记或留给用户处理的事项。
 
-如果任何步骤失败，遵循 agent-skills:debugging-and-error-recovery 技能。
+如果任何步骤失败，遵循 cn-agent-skills:debugging-and-error-recovery 技能。

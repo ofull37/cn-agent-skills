@@ -79,7 +79,7 @@ npx skills add ofull37/cn-agent-skills --skill test-driven-development   # red-g
 > **遇到 SSH 错误？** 市场会通过 SSH 克隆仓库。如果你没有在 GitHub 上配置 SSH 密钥，可以[添加 SSH 密钥](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account)，或在添加市场这一步使用完整的 HTTPS URL 来强制走 HTTPS 克隆：
 > ```bash
 > /plugin marketplace add https://github.com/ofull37/cn-agent-skills.git
-> /plugin install agent-skills@addy-agent-skills
+> /plugin install cn-agent-skills@cn-addy-agent-skills
 > ```
 >
 > 如果在 Windows 或 macOS 上 `/plugin install` 仍然报 `git@github.com: Permission denied (publickey)`，推荐的解决办法是配置一次 Git，让子进程克隆时把 GitHub 的 SSH URL 改写为 HTTPS：
@@ -177,7 +177,7 @@ gemini skills install ./agent-skills/skills/
 
 ```bash
 codex plugin marketplace add ofull37/cn-agent-skills
-codex plugin add agent-skills@agent-skills
+codex plugin add cn-agent-skills@cn-agent-skills
 ```
 
 第一个命令注册市场；第二个命令安装插件。Codex 通过 `.codex-plugin/plugin.json` 直接读取根目录的 `skills/`。安装后，可以在聊天中使用 `@` 调用技能（例如 `@spec-driven-development`）。本地安装和故障排查参见 [docs/codex-setup.md](docs/codex-setup.md)。

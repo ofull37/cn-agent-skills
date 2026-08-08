@@ -2,7 +2,7 @@
 description: 开始 spec 驱动开发——在编写代码之前先编写结构化规格说明
 ---
 
-调用 agent-skills:spec-driven-development 技能。
+调用 cn-agent-skills:spec-driven-development 技能。
 
 首先了解用户想要构建什么。围绕以下方面提出澄清性问题：
 1. 目标和目标用户
